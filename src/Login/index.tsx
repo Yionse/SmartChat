@@ -2,8 +2,10 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Box, Button, Input, Text, Toast, View} from 'native-base';
 import {StyleSheet} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {useNavigation} from '@react-navigation/native';
+
 import AnimateBackBox from '../Components/AnimateBackBox';
-import {fetchSendCode} from '../apis/login';
+import {fetchLogin, fetchSendCode} from '../apis/login';
 
 export default function Login() {
   const [user, setUser] = useState<string>('');
@@ -11,7 +13,10 @@ export default function Login() {
   const [isDisabledCodeBtn, setIDisabledCodeBtn] = useState(false);
   const [count, setCount] = useState(59);
   const btnTimer = useRef<null>();
-  const {} = fetchSendCode();
+  const navigation = useNavigation<any>();
+
+  const {mutateAsync: sendCode} = fetchSendCode();
+  const {mutateAsync: login} = fetchLogin();
   const styles = StyleSheet.create({
     titleText: {
       height: 60,
@@ -24,12 +29,20 @@ export default function Login() {
     return () => clearInterval(btnTimer.current as any);
   }, []);
 
-  const codeBtnHandle = () => {
+  const codeBtnHandle = async () => {
+    if (!user) {
+      Toast.show({description: '请输入QQ'});
+      return;
+    }
     setIDisabledCodeBtn(true);
     clearInterval(btnTimer.current as any);
     btnTimer.current = setInterval(() => {
       setCount(countDown => countDown - 1);
     }, 1000) as any;
+    await sendCode({qq: user});
+    Toast.show({
+      description: '已发送验证码',
+    });
   };
 
   useEffect(() => {
@@ -40,10 +53,20 @@ export default function Login() {
     }
   }, [count]);
 
-  const loginHandle = () => {
+  const loginHandle = async () => {
     const regex = /^\d+$/;
     if (regex.test(user) && regex.test(code) && code.length === 6) {
-      console.log(user, code);
+      const res = await login({qq: user, code, sendTime: +new Date() + ''});
+      console.log(res);
+      if (res.token) {
+        Toast.show({description: '登录成功'});
+        setUser('');
+        setCode('');
+        setCount(() => 0);
+        navigation.navigate('Home');
+      } else {
+        Toast.show({description: '登录失败'});
+      }
     } else {
       Toast.show({
         description: '请输入合法的QQ或验证码',

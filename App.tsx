@@ -6,6 +6,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Login from './src/Login';
 import Home from './src/Home';
 import {QueryClient, QueryClientProvider} from 'react-query';
+import {UserInfoProvide} from './src/Context/UserInfo';
 
 const queryClient = new QueryClient();
 const Stack = createNativeStackNavigator();
@@ -24,13 +25,15 @@ function Main() {
 
 const App = () => {
   return (
-    <NativeBaseProvider>
-      <NavigationContainer>
-        <QueryClientProvider client={queryClient}>
-          <Main />
-        </QueryClientProvider>
-      </NavigationContainer>
-    </NativeBaseProvider>
+    <UserInfoProvide>
+      <NativeBaseProvider>
+        <NavigationContainer>
+          <QueryClientProvider client={queryClient}>
+            <Main />
+          </QueryClientProvider>
+        </NavigationContainer>
+      </NativeBaseProvider>
+    </UserInfoProvide>
   );
 };
 export default App;
