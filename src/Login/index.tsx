@@ -3,6 +3,7 @@ import {Box, Button, Input, Text, Toast, View} from 'native-base';
 import {StyleSheet} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import AnimateBackBox from '../Components/AnimateBackBox';
+import {fetchSendCode} from '../apis/login';
 
 export default function Login() {
   const [user, setUser] = useState<string>('');
@@ -10,6 +11,7 @@ export default function Login() {
   const [isDisabledCodeBtn, setIDisabledCodeBtn] = useState(false);
   const [count, setCount] = useState(59);
   const btnTimer = useRef<null>();
+  const {} = fetchSendCode();
   const styles = StyleSheet.create({
     titleText: {
       height: 60,

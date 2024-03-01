@@ -13,6 +13,7 @@
     "@react-navigation/bottom-tabs": "^6.5.8",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",
+    "axios": "^1.6.7",
     "formik": "^2.4.5",
     "lodash": "^4.17.21",
     "native-base": "3.4.0",
@@ -28,7 +29,8 @@
     "react-native-screens": "3.5.0",
     "react-native-svg": "^12.1.1",
     "react-native-tab-view": "^3.5.2",
-    "react-native-vector-icons": "8.1.0"
+    "react-native-vector-icons": "8.1.0",
+    "react-query": "^3.39.3"
   },
   "devDependencies": {
     "@babel/core": "^7.22.17",
