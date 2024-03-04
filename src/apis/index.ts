@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const httpInstance = axios.create({
-  baseURL: 'https://localhost:9901/',
+  baseURL: 'https://10.6.0.92:9901/',
   timeout: 5000,
 });
 
@@ -16,7 +16,7 @@ httpInstance.interceptors.request.use(
 
 httpInstance.interceptors.response.use(
   res => {
-    const {code, result, msg} = res.data;
+    const {result} = res.data;
     return result;
   },
   error => {
@@ -46,7 +46,7 @@ export const fetchFile = async (url: string, data: any, param?: any) => {
   };
   try {
     const response = await fetch(
-      `http://localhost:9901/files` + url,
+      `https://10.6.0.92:9901/files` + url,
       defaultConfig,
     );
     if (!response.ok) {

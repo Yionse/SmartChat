@@ -1,12 +1,13 @@
 import React from 'react';
 import 'react-native-gesture-handler';
-import {NativeBaseProvider, Text} from 'native-base';
+import {NativeBaseProvider} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Login from './src/Login';
-import Home from './src/Home';
 import {QueryClient, QueryClientProvider} from 'react-query';
+import Login from './src/Pages/Login';
+import Home from './src/Pages/Home';
 import {UserInfoProvide} from './src/Context/UserInfo';
+import Init from './src/Pages/Init';
 
 const queryClient = new QueryClient();
 const Stack = createNativeStackNavigator();
@@ -17,6 +18,7 @@ function Main() {
       screenOptions={{
         headerShown: false,
       }}>
+      <Stack.Screen name="Init" component={Init} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Home" component={Home} />
     </Stack.Navigator>
@@ -25,15 +27,15 @@ function Main() {
 
 const App = () => {
   return (
-    <UserInfoProvide>
-      <NativeBaseProvider>
-        <NavigationContainer>
-          <QueryClientProvider client={queryClient}>
+    <NativeBaseProvider>
+      <NavigationContainer>
+        <QueryClientProvider client={queryClient}>
+          <UserInfoProvide>
             <Main />
-          </QueryClientProvider>
-        </NavigationContainer>
-      </NativeBaseProvider>
-    </UserInfoProvide>
+          </UserInfoProvide>
+        </QueryClientProvider>
+      </NavigationContainer>
+    </NativeBaseProvider>
   );
 };
 export default App;

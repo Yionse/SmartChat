@@ -35,6 +35,7 @@ export default function AnimateBackBox(props: any) {
         height: '100%',
         display: 'flex',
         justifyContent: 'flex-end',
+        position: 'relative',
       }}
       colors={['#cffafe', '#22d3ee']}
       locations={locations}

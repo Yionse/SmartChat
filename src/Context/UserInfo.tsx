@@ -1,7 +1,4 @@
-import React, {createContext, useState} from 'react';
-
-const [token, setToken] = useState<string>('');
-const [qq, setQQ] = useState<string>('');
+import React, {createContext, useEffect, useState} from 'react';
 
 interface TUserInfo {
   token: string;
@@ -10,9 +7,11 @@ interface TUserInfo {
   setQQ: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const UserInfoContext = createContext<TUserInfo>({} as TUserInfo);
+export const UserInfoContext = createContext<TUserInfo>({} as TUserInfo);
 
 export function UserInfoProvide(props: any) {
+  const [token, setToken] = useState<string>('');
+  const [qq, setQQ] = useState<string>('');
   return (
     <UserInfoContext.Provider value={{qq, token, setQQ, setToken}}>
       {props.children}

@@ -1,11 +1,19 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {Box, Button, Input, Text, Toast, View} from 'native-base';
 import {StyleSheet} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 
-import AnimateBackBox from '../Components/AnimateBackBox';
-import {fetchLogin, fetchSendCode} from '../apis/login';
+import AnimateBackBox from '../../Components/AnimateBackBox';
+import {fetchLogin, fetchSendCode} from '../../apis/login';
+import {UserInfoContext} from '../../Context/UserInfo';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login() {
   const [user, setUser] = useState<string>('');
@@ -15,6 +23,7 @@ export default function Login() {
   const btnTimer = useRef<null>();
   const navigation = useNavigation<any>();
 
+  const {setToken, setQQ} = useContext(UserInfoContext);
   const {mutateAsync: sendCode} = fetchSendCode();
   const {mutateAsync: login} = fetchLogin();
   const styles = StyleSheet.create({
@@ -29,7 +38,7 @@ export default function Login() {
     return () => clearInterval(btnTimer.current as any);
   }, []);
 
-  const codeBtnHandle = async () => {
+  const codeBtnHandle = useCallback(async () => {
     if (!user) {
       Toast.show({description: '请输入QQ'});
       return;
@@ -43,7 +52,7 @@ export default function Login() {
     Toast.show({
       description: '已发送验证码',
     });
-  };
+  }, [user]);
 
   useEffect(() => {
     if (count < 1) {
@@ -57,19 +66,22 @@ export default function Login() {
     const regex = /^\d+$/;
     if (regex.test(user) && regex.test(code) && code.length === 6) {
       const res = await login({qq: user, code, sendTime: +new Date() + ''});
-      console.log(res);
       if (res.token) {
         Toast.show({description: '登录成功'});
         setUser('');
         setCode('');
         setCount(() => 0);
+        setToken(res.token);
+        setQQ(user);
+        await AsyncStorage.setItem('ZL_APP_TOKEN', res.token);
+        await AsyncStorage.setItem('ZL_APP_QQ', user);
         navigation.navigate('Home');
       } else {
         Toast.show({description: '登录失败'});
       }
     } else {
       Toast.show({
-        description: '请输入合法的QQ或验证码',
+        description: '验证码错误或已过期',
       });
     }
   };
