@@ -7,6 +7,7 @@ import {QueryClient, QueryClientProvider} from 'react-query';
 import Login from './src/Pages/Login';
 import Home from './src/Pages/Home';
 import {UserInfoContext, UserInfoProvide} from './src/Context/UserInfo';
+import SetUserInfo from './src/Pages/SetUserInfo';
 
 const queryClient = new QueryClient();
 const Stack = createNativeStackNavigator();
@@ -15,12 +16,11 @@ function Main() {
   const {token, qq} = useContext(UserInfoContext);
   const navigation = useNavigation<any>();
   useEffect(() => {
-    if (token && qq) {
-      setTimeout(() => {
-        navigation.navigate('Home');
-      }, 1000);
-    } else {
-      navigation.navigate('Login');
+    if (!token && !qq) {
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Login'}],
+      });
     }
   }, [token, qq]);
   return (
@@ -29,6 +29,7 @@ function Main() {
         headerShown: false,
       }}>
       <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="SetUser" component={SetUserInfo} />
       <Stack.Screen name="Home" component={Home} />
     </Stack.Navigator>
   );

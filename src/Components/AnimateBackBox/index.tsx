@@ -12,7 +12,7 @@ export default function AnimateBackBox(props: any) {
       if (isAdd) {
         x += 0.01;
         y -= 0.01;
-        if (x >= 0.41) {
+        if (x >= 0.21) {
           setIsAdd(false);
         }
       } else {

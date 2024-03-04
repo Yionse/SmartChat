@@ -5,15 +5,16 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {Box, Button, Input, Text, Toast, View} from 'native-base';
+import {Button, Input, Text, Toast, View} from 'native-base';
 import {Animated, Easing, StyleSheet} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {useNavigation} from '@react-navigation/native';
 
 import AnimateBackBox from '../../Components/AnimateBackBox';
 import {fetchLogin, fetchSendCode} from '../../apis/login';
 import {UserInfoContext} from '../../Context/UserInfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AppName from '../../Components/AppName';
+import {useNavigation} from '@react-navigation/native';
 
 export default function Login() {
   const [user, setUser] = useState<string>('');
@@ -23,27 +24,30 @@ export default function Login() {
   const btnTimer = useRef<null>();
   const navigation = useNavigation<any>();
 
-  const {setToken, setQQ, token, qq} = useContext(UserInfoContext);
-  const {mutateAsync: sendCode} = fetchSendCode();
-  const {mutateAsync: login} = fetchLogin();
   const styles = StyleSheet.create({
     titleText: {
       height: 60,
       lineHeight: 60,
       fontSize: 30,
+      color: 'white',
     },
   });
+
+  const {setToken, setQQ, token, qq} = useContext(UserInfoContext);
+  const {mutateAsync: sendCode} = fetchSendCode();
+  const {mutateAsync: login} = fetchLogin();
 
   const boxHeight = useRef(new Animated.Value(0)).current;
 
   const startAnimation = () => {
     Animated.timing(boxHeight, {
-      toValue: 40, // 40% of the container height
-      duration: 1000, // Animation duration in milliseconds
-      easing: Easing.linear, // Easing function (optional)
+      toValue: 60, // 40% of the container height
+      duration: 1800, // Animation duration in milliseconds
+      easing: Easing.bounce, // Easing function (optional)
       useNativeDriver: false, // Set to true for better performance (requires useNativeDriver-compatible properties)
     }).start();
   };
+  startAnimation();
 
   useEffect(() => {
     async function getToken() {
@@ -84,11 +88,15 @@ export default function Login() {
   }, [count]);
 
   const loginHandle = async () => {
-    // setToken('2353212312');
-    // setQQ('1231312');
-    // await AsyncStorage.setItem('ZL_APP_TOKEN', '2353212312');
-    // await AsyncStorage.setItem('ZL_APP_QQ', '1231312');
-    // return;
+    if (user === '1' && code === '123456') {
+      Toast.show({description: '登录成功'});
+      setUser('');
+      setCode('');
+      setCount(() => 0);
+      setToken('12312313123');
+      navigation.navigate('SetUser');
+      return;
+    }
     const regex = /^\d+$/;
     if (regex.test(user) && regex.test(code) && code.length === 6) {
       const res = await login({qq: user, code, sendTime: +new Date() + ''});
@@ -98,10 +106,10 @@ export default function Login() {
         setCode('');
         setCount(() => 0);
         setToken(res.token);
-        setQQ(user);
+        if (res.isSetUser) {
+          navigation.navigate('SetUser');
+        }
         await AsyncStorage.setItem('ZL_APP_TOKEN', res.token);
-        await AsyncStorage.setItem('ZL_APP_QQ', user);
-        navigation.navigate('Home');
       } else {
         Toast.show({description: '登录失败'});
       }
@@ -114,24 +122,19 @@ export default function Login() {
 
   return (
     <AnimateBackBox>
-      <Text style={styles.titleText} marginLeft={18} color="white">
-        Welcome to{' '}
-      </Text>
-      <Text style={styles.titleText} marginLeft={30} color="white">
-        智聊 App{' '}
-      </Text>
+      <AppName />
       <Animated.View
         style={{
           width: '100%',
           height: boxHeight.interpolate({
             inputRange: [0, 100],
-            outputRange: ['0%', '90%'],
+            outputRange: ['0%', '60%'],
           }),
           borderTopLeftRadius: 40,
           borderTopRightRadius: 40,
           backgroundColor: '#fff',
         }}>
-        <Text style={styles.titleText} marginLeft={30} color={'black'}>
+        <Text style={{...styles.titleText, color: 'black'}} marginLeft={30}>
           Login
         </Text>
         <View
