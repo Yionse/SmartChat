@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import {Box, Button, Input, Text, Toast, View} from 'native-base';
-import {StyleSheet} from 'react-native';
+import {Animated, Easing, StyleSheet} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 
@@ -23,7 +23,7 @@ export default function Login() {
   const btnTimer = useRef<null>();
   const navigation = useNavigation<any>();
 
-  const {setToken, setQQ} = useContext(UserInfoContext);
+  const {setToken, setQQ, token, qq} = useContext(UserInfoContext);
   const {mutateAsync: sendCode} = fetchSendCode();
   const {mutateAsync: login} = fetchLogin();
   const styles = StyleSheet.create({
@@ -34,9 +34,30 @@ export default function Login() {
     },
   });
 
+  const boxHeight = useRef(new Animated.Value(0)).current;
+
+  const startAnimation = () => {
+    Animated.timing(boxHeight, {
+      toValue: 40, // 40% of the container height
+      duration: 1000, // Animation duration in milliseconds
+      easing: Easing.linear, // Easing function (optional)
+      useNativeDriver: false, // Set to true for better performance (requires useNativeDriver-compatible properties)
+    }).start();
+  };
+
   useEffect(() => {
+    async function getToken() {
+      const token = (await AsyncStorage.getItem('ZL_APP_TOKEN')) || '';
+      const qq = (await AsyncStorage.getItem('ZL_APP_QQ')) || '';
+      setToken(token);
+      setQQ(qq);
+      if (!token && !qq) {
+        startAnimation();
+      }
+    }
+    getToken();
     return () => clearInterval(btnTimer.current as any);
-  }, []);
+  }, [token, qq]);
 
   const codeBtnHandle = useCallback(async () => {
     if (!user) {
@@ -63,6 +84,11 @@ export default function Login() {
   }, [count]);
 
   const loginHandle = async () => {
+    // setToken('2353212312');
+    // setQQ('1231312');
+    // await AsyncStorage.setItem('ZL_APP_TOKEN', '2353212312');
+    // await AsyncStorage.setItem('ZL_APP_QQ', '1231312');
+    // return;
     const regex = /^\d+$/;
     if (regex.test(user) && regex.test(code) && code.length === 6) {
       const res = await login({qq: user, code, sendTime: +new Date() + ''});
@@ -94,15 +120,16 @@ export default function Login() {
       <Text style={styles.titleText} marginLeft={30} color="white">
         智聊 App{' '}
       </Text>
-      <Box
+      <Animated.View
         style={{
           width: '100%',
-          height: '45%',
+          height: boxHeight.interpolate({
+            inputRange: [0, 100],
+            outputRange: ['0%', '90%'],
+          }),
           borderTopLeftRadius: 40,
           borderTopRightRadius: 40,
           backgroundColor: '#fff',
-          display: 'flex',
-          justifyContent: 'space-around',
         }}>
         <Text style={styles.titleText} marginLeft={30} color={'black'}>
           Login
@@ -147,7 +174,7 @@ export default function Login() {
             登录
           </Button>
         </View>
-      </Box>
+      </Animated.View>
     </AnimateBackBox>
   );
 }
