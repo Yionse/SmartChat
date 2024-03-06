@@ -88,13 +88,18 @@ export default function Login() {
   }, [count]);
 
   const loginHandle = async () => {
-    if (user === '1' && code === '123456') {
+    if (user === '1' && code === '123123') {
       Toast.show({description: '登录成功'});
       setUser('');
       setCode('');
       setCount(() => 0);
       setToken('12312313123');
-      navigation.navigate('SetUser');
+      navigation.navigate({
+        name: 'SetUser',
+        params: {
+          qq: user,
+        },
+      });
       return;
     }
     const regex = /^\d+$/;
