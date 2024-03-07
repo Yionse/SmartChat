@@ -1,10 +1,12 @@
 import {Image, View, Input, Text, Radio, Button} from 'native-base';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Animated, Easing, StyleSheet} from 'react-native';
 import AnimateBackBox from '../../Components/AnimateBackBox';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {UserInfoContext} from '../../Context/UserInfo';
 
 export default function SetUserInfo() {
+  const {setQQ} = useContext(UserInfoContext);
   const [gender, setGender] = useState('');
   const [signature, setSignature] = useState('');
   const [hobbies, setHobbies] = useState([]);
@@ -46,6 +48,7 @@ export default function SetUserInfo() {
     // 处理表单提交，例如验证和发送数据
     // ...
     // 你可以导航到下一个屏幕或根据需要进行处理
+    setQQ('2458015575');
     navigation.reset({
       index: 0,
       routes: [{name: 'Home'}],

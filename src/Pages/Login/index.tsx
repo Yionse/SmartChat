@@ -89,7 +89,7 @@ export default function Login() {
 
   const loginHandle = async () => {
     if (user === '1' && code === '123123') {
-      Toast.show({description: '登录成功'});
+      Toast.show({description: '首次登录需要设置个人信息'});
       setUser('');
       setCode('');
       setCount(() => 0);

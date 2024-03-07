@@ -1,7 +1,7 @@
 import React, {useCallback, useContext, useRef, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {Dimensions, PanResponder} from 'react-native';
-import {View} from 'native-base';
+import {Image, Text, View, useTheme} from 'native-base';
 import {UserInfoContext} from '../../Context/UserInfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -9,6 +9,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Message from '../Message';
 import Contact from '../Contact';
 import Square from '../Square';
+import TabHeader from '../../Components/TabHeader';
+import {TabKeyProvide} from '../../Context/TabKey';
 
 const Tab = createBottomTabNavigator();
 
@@ -58,8 +60,9 @@ export default function Home() {
       },
     }),
   ).current;
+  const {colors} = useTheme();
   return (
-    <>
+    <TabKeyProvide>
       <View
         flex={1}
         {...panResponder.panHandlers}
@@ -77,15 +80,111 @@ export default function Home() {
               } else {
                 iconName = 'cloudo';
               }
-              // You can return any component that you like here!
-              return <AntDesign name={iconName} size={size} color={color} />;
+              return (
+                <AntDesign
+                  name={iconName}
+                  size={size}
+                  color={focused ? colors.primary[300] : colors.primary[900]}
+                />
+              );
             },
+            tabBarItemStyle: ({focused}: any) => {
+              return {
+                height: 60,
+                borderTopColor: focused ? '#0891b2' : 'transparent',
+                borderTopWidth: focused ? 2 : 0,
+              };
+            },
+            tabBarLabelStyle: {
+              fontSize: 12, // Adjust the fontSize of the tabBar labels
+            },
+            tabBarLabel: () => null,
             tabBarActiveTintColor: '#0891b2',
             tabBarInactiveTintColor: 'gray',
           })}>
-          <Tab.Screen name="message" component={Message} />
-          <Tab.Screen name="contact" component={Contact} />
-          <Tab.Screen name="square" component={Square} />
+          <Tab.Screen
+            name="message"
+            component={Message}
+            options={{
+              header() {
+                return (
+                  <TabHeader
+                    title="消息"
+                    leftElement={
+                      <View position={'relative'} flex={1}>
+                        <Image
+                          source={{
+                            uri: `https://q1.qlogo.cn/g?b=qq&nk=${2458015575}&s=5`,
+                          }}
+                          borderRadius={'full'}
+                          alt="头像"
+                          width={'40px'}
+                          height={'40px'}
+                          position={'absolute'}
+                          left={1}
+                          marginTop={'5px'}
+                        />
+                      </View>
+                    }
+                  />
+                );
+              },
+            }}
+          />
+          <Tab.Screen
+            name="contact"
+            component={Contact}
+            options={{
+              header() {
+                return (
+                  <TabHeader
+                    title="联系人"
+                    rightElement={
+                      <View
+                        flex={1}
+                        display={'flex'}
+                        flexDirection={'row'}
+                        justifyContent={'flex-end'}
+                        paddingTop={'8px'}>
+                        <AntDesign
+                          name="adduser"
+                          size={30}
+                          color={colors.primary[200]}
+                        />
+                      </View>
+                    }
+                  />
+                );
+              },
+            }}
+          />
+          <Tab.Screen
+            name="square"
+            component={Square}
+            options={{
+              header() {
+                return (
+                  <TabHeader
+                    title="广场"
+                    rightElement={
+                      <View
+                        flex={1}
+                        display={'flex'}
+                        flexDirection={'row'}
+                        justifyContent={'flex-end'}
+                        paddingTop={'8px'}>
+                        <AntDesign
+                          name="addfile"
+                          size={30}
+                          color={colors.primary[200]}
+                        />
+                      </View>
+                    }
+                  />
+                );
+              },
+            }}
+          />
         </Tab.Navigator>
       </View>
       <View
@@ -100,6 +199,6 @@ export default function Home() {
           height: Dimensions.get('window').height,
           backgroundColor: 'skyblue',
         }}></View>
-    </>
+    </TabKeyProvide>
   );
 }

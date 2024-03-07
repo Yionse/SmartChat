@@ -18,8 +18,8 @@ function Main() {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="SetUser" component={SetUserInfo} />
+      {/* <Stack.Screen name="Login" component={Login} /> */}
+      {/* <Stack.Screen name="SetUser" component={SetUserInfo} /> */}
       <Stack.Screen name="Home" component={Home} />
     </Stack.Navigator>
   );
