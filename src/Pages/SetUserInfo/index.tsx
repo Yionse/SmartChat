@@ -10,7 +10,7 @@ export default function SetUserInfo() {
   const [hobbies, setHobbies] = useState([]);
   const boxHeight = useRef(new Animated.Value(0)).current;
   const route = useRoute<RouteProp<{params: {qq: string}}>>();
-  const [nickname, setNickname] = useState(route.params.qq || '');
+  const [nickname, setNickname] = useState(route.params?.qq || '');
   const navigation = useNavigation<any>();
   const styles = StyleSheet.create({
     titleText: {

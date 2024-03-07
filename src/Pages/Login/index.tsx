@@ -93,7 +93,7 @@ export default function Login() {
       setUser('');
       setCode('');
       setCount(() => 0);
-      setToken('12312313123');
+      // setToken('12312313123');
       navigation.navigate({
         name: 'SetUser',
         params: {

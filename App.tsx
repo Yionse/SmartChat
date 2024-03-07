@@ -13,16 +13,6 @@ const queryClient = new QueryClient();
 const Stack = createNativeStackNavigator();
 
 function Main() {
-  const {token, qq} = useContext(UserInfoContext);
-  const navigation = useNavigation<any>();
-  useEffect(() => {
-    if (!token && !qq) {
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'Login'}],
-      });
-    }
-  }, [token, qq]);
   return (
     <Stack.Navigator
       screenOptions={{
