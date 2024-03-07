@@ -2,7 +2,7 @@ import {Image, View, Input, Text, Radio, Button} from 'native-base';
 import React, {useEffect, useRef, useState} from 'react';
 import {Animated, Easing, StyleSheet} from 'react-native';
 import AnimateBackBox from '../../Components/AnimateBackBox';
-import {RouteProp, useRoute} from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 
 export default function SetUserInfo() {
   const [gender, setGender] = useState('');
@@ -11,6 +11,7 @@ export default function SetUserInfo() {
   const boxHeight = useRef(new Animated.Value(0)).current;
   const route = useRoute<RouteProp<{params: {qq: string}}>>();
   const [nickname, setNickname] = useState(route.params.qq || '');
+  const navigation = useNavigation<any>();
   const styles = StyleSheet.create({
     titleText: {
       height: 60,
@@ -45,6 +46,10 @@ export default function SetUserInfo() {
     // 处理表单提交，例如验证和发送数据
     // ...
     // 你可以导航到下一个屏幕或根据需要进行处理
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'Home'}],
+    });
   };
   return (
     <AnimateBackBox>
