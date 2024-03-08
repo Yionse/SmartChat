@@ -88,33 +88,37 @@ export default function Login() {
   }, [count]);
 
   const loginHandle = async () => {
-    if (user === '1' && code === '123123') {
-      Toast.show({description: '首次登录需要设置个人信息'});
-      setUser('');
-      setCode('');
-      setCount(() => 0);
-      // setToken('12312313123');
-      navigation.navigate({
-        name: 'SetUser',
-        params: {
-          qq: user,
-        },
-      });
-      return;
-    }
     const regex = /^\d+$/;
     if (regex.test(user) && regex.test(code) && code.length === 6) {
       const res = await login({qq: user, code, sendTime: +new Date() + ''});
+      console.log(res);
       if (res.token) {
-        Toast.show({description: '登录成功'});
+        if (res.isSetUser) {
+          Toast.show({description: '首次登录需设置个人信息'});
+          // 进入设置个人信息页面，不存储任何东西
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'SetUser'}],
+            // params: {
+            //   qq: user,
+            //   token: res.token,
+            // },
+          });
+        } else {
+          // 进入主页，存储所有信息
+          Toast.show({description: '登录成功'});
+          setToken(res.token);
+          setQQ(user);
+          await AsyncStorage.setItem('ZL_APP_TOKEN', res.token);
+          await AsyncStorage.setItem('ZL_APP_QQ', user);
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Home'}],
+          });
+        }
         setUser('');
         setCode('');
         setCount(() => 0);
-        setToken(res.token);
-        if (res.isSetUser) {
-          navigation.navigate('SetUser');
-        }
-        await AsyncStorage.setItem('ZL_APP_TOKEN', res.token);
       } else {
         Toast.show({description: '登录失败'});
       }

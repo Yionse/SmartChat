@@ -1,4 +1,4 @@
-import React, {createContext, useEffect, useState} from 'react';
+import React, {useState, createContext} from 'react';
 
 interface TUserInfo {
   token: string;

@@ -1,12 +1,12 @@
-import React, {useContext, useEffect} from 'react';
+import React from 'react';
 import 'react-native-gesture-handler';
 import {NativeBaseProvider} from 'native-base';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {QueryClient, QueryClientProvider} from 'react-query';
 import Login from './src/Pages/Login';
 import Home from './src/Pages/Home';
-import {UserInfoContext, UserInfoProvide} from './src/Context/UserInfo';
+import {UserInfoProvide} from './src/Context/UserInfo';
 import SetUserInfo from './src/Pages/SetUserInfo';
 
 const queryClient = new QueryClient();
@@ -18,8 +18,8 @@ function Main() {
       screenOptions={{
         headerShown: false,
       }}>
-      {/* <Stack.Screen name="Login" component={Login} /> */}
-      {/* <Stack.Screen name="SetUser" component={SetUserInfo} /> */}
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="SetUser" component={SetUserInfo} />
       <Stack.Screen name="Home" component={Home} />
     </Stack.Navigator>
   );

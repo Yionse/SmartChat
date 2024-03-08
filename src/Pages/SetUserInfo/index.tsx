@@ -1,9 +1,10 @@
 import {Image, View, Input, Text, Radio, Button} from 'native-base';
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {Animated, Easing, StyleSheet} from 'react-native';
 import AnimateBackBox from '../../Components/AnimateBackBox';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {UserInfoContext} from '../../Context/UserInfo';
+import {getHobbyList} from '../../apis/login';
 
 export default function SetUserInfo() {
   const {setQQ} = useContext(UserInfoContext);
@@ -13,6 +14,15 @@ export default function SetUserInfo() {
   const boxHeight = useRef(new Animated.Value(0)).current;
   const route = useRoute<RouteProp<{params: {qq: string}}>>();
   const [nickname, setNickname] = useState(route.params?.qq || '');
+  const {data} = getHobbyList();
+  const hobbyList = useMemo(() => {
+    return data?.hobbyList.map(item => {
+      return {
+        label: item.name,
+        value: item.name,
+      };
+    });
+  }, [data]);
   const navigation = useNavigation<any>();
   const styles = StyleSheet.create({
     titleText: {
@@ -48,7 +58,6 @@ export default function SetUserInfo() {
     // 处理表单提交，例如验证和发送数据
     // ...
     // 你可以导航到下一个屏幕或根据需要进行处理
-    setQQ('2458015575');
     navigation.reset({
       index: 0,
       routes: [{name: 'Home'}],
@@ -127,6 +136,9 @@ export default function SetUserInfo() {
               flex={1}
               ml={8}
             />
+          </View>
+          <View style={styles.formContainer}>
+            <Text style={styles.formTitle}>爱好</Text>
           </View>
         </View>
         <Button onPress={handleSubmit} my={8} mx={4} borderRadius={'full'}>
