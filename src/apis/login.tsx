@@ -1,6 +1,6 @@
 import {useMutation, useQuery} from 'react-query';
 import {ClientError, get, post} from '.';
-import {HobbyList} from './types';
+import {HobbyList, TUserInfo, TVerify} from './types';
 
 export function fetchSendCode() {
   return useMutation<any, ClientError, {qq: string}>(data =>
@@ -18,5 +18,17 @@ export function fetchLogin() {
 export function getHobbyList() {
   return useQuery([], async () =>
     get<{hobbyList: HobbyList[]}>('/login/hobby'),
+  );
+}
+
+export function fetchSetUserInfo() {
+  return useMutation(async (data: TUserInfo) =>
+    post<TVerify>('/login/info', data),
+  );
+}
+
+export function fetchVerifyToken() {
+  return useMutation(async (data: {token: string}) =>
+    post<TVerify>('/login/verify', data),
   );
 }

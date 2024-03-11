@@ -1,20 +1,32 @@
-import {Image, View, Input, Text, Radio, Button, Checkbox} from 'native-base';
+import {
+  Image,
+  View,
+  Input,
+  Text,
+  Radio,
+  Button,
+  Checkbox,
+  Toast,
+} from 'native-base';
 import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {Animated, Easing, StyleSheet} from 'react-native';
 import AnimateBackBox from '../../Components/AnimateBackBox';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {UserInfoContext} from '../../Context/UserInfo';
-import {getHobbyList} from '../../apis/login';
+import {fetchSetUserInfo, getHobbyList} from '../../apis/login';
+import {HobbyList} from '../../apis/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SetUserInfo() {
-  const {setQQ} = useContext(UserInfoContext);
-  const [gender, setGender] = useState('');
+  const {setToken, token, setStatus} = useContext(UserInfoContext);
+  const [gender, setGender] = useState('女');
   const [signature, setSignature] = useState('');
-  const [hobbies, setHobbies] = useState([]);
+  const [hobbies, setHobbies] = useState<any>([]);
   const boxHeight = useRef(new Animated.Value(0)).current;
   const route = useRoute<RouteProp<{params: {qq: string}}>>();
   const [nickname, setNickname] = useState(route.params?.qq || '');
   const {data: hobbyList} = getHobbyList();
+  const {mutateAsync: setUserInfo} = fetchSetUserInfo();
   const navigation = useNavigation<any>();
   const styles = StyleSheet.create({
     titleText: {
@@ -45,12 +57,26 @@ export default function SetUserInfo() {
   useEffect(() => {
     startAnimation();
   }, []);
-
   const handleSubmit = async () => {
-    // 处理表单提交，例如验证和发送数据
-    // ...
-    // 你可以导航到下一个屏幕或根据需要进行处理
-    setQQ(route.params?.qq || '');
+    if (nickname && gender && hobbies.length !== 0) {
+      const res = await setUserInfo({
+        qq: route.params?.qq || '',
+        userImg: `https://q1.qlogo.cn/g?b=qq&nk=${
+          route.params.qq === '1' ? '2458015575' : route.params.qq
+        }&s=5`,
+        userName: nickname,
+        sex: gender,
+        hobbyList: hobbies.join('-') as any,
+      });
+      if (res.isSuccess) {
+        await AsyncStorage.setItem('ZL_APP_TOKEN', token);
+        setStatus('Home');
+      } else {
+        Toast.show({description: '网络错误'});
+      }
+    } else {
+      Toast.show({description: '请填入信息'});
+    }
   };
   return (
     <AnimateBackBox>
@@ -133,16 +159,34 @@ export default function SetUserInfo() {
               value={hobbies}
               accessibilityLabel="选择爱好"
               display={'flex'}
-              flexDirection={'row'}>
+              flexDirection={'row'}
+              style={{
+                flexWrap: 'wrap',
+              }}>
               {hobbyList?.hobbyList.map(item => (
-                <Checkbox value={item.name}>{item.name}</Checkbox>
+                <Checkbox mx={4} value={item.name} key={item.id}>
+                  {item.name}
+                </Checkbox>
               ))}
             </Checkbox.Group>
           </View>
+          <View display={'flex'} flexDirection={'row'}>
+            <Button
+              onPress={async () => setStatus('Login')}
+              my={8}
+              borderRadius={'full'}
+              width={'50%'}>
+              <Text>重新登录</Text>
+            </Button>
+            <Button
+              onPress={handleSubmit}
+              my={8}
+              borderRadius={'full'}
+              width={'50%'}>
+              <Text>提交</Text>
+            </Button>
+          </View>
         </View>
-        <Button onPress={handleSubmit} my={8} mx={4} borderRadius={'full'}>
-          <Text>提交</Text>
-        </Button>
       </Animated.View>
     </AnimateBackBox>
   );

@@ -33,7 +33,7 @@ export default function Login() {
     },
   });
 
-  const {setToken, setQQ, token, qq} = useContext(UserInfoContext);
+  const {setToken, setStatus, token, qq, setQQ} = useContext(UserInfoContext);
   const {mutateAsync: sendCode} = fetchSendCode();
   const {mutateAsync: login} = fetchLogin();
 
@@ -52,16 +52,14 @@ export default function Login() {
   useEffect(() => {
     async function getToken() {
       const token = (await AsyncStorage.getItem('ZL_APP_TOKEN')) || '';
-      const qq = (await AsyncStorage.getItem('ZL_APP_QQ')) || '';
       setToken(token);
-      setQQ(qq);
-      if (!token && !qq) {
+      if (!token) {
         startAnimation();
       }
     }
     getToken();
     return () => clearInterval(btnTimer.current as any);
-  }, [token, qq]);
+  }, [token]);
 
   const codeBtnHandle = useCallback(async () => {
     if (!user) {
@@ -91,19 +89,17 @@ export default function Login() {
     const regex = /^\d+$/;
     if (regex.test(user) && regex.test(code) && code.length === 6) {
       const res = await login({qq: user, code, sendTime: +new Date() + ''});
-      console.log(res);
       if (res.token) {
         if (res.isSetUser) {
           Toast.show({description: '首次登录需设置个人信息'});
           // 进入设置个人信息页面，不存储任何东西
+          setStatus('SetUser');
+          setQQ(user);
           setToken(res.token);
         } else {
           // 进入主页，存储所有信息
           Toast.show({description: '登录成功'});
           setToken(res.token);
-          setQQ(user);
-          await AsyncStorage.setItem('ZL_APP_TOKEN', res.token);
-          await AsyncStorage.setItem('ZL_APP_QQ', user);
         }
         setUser('');
         setCode('');

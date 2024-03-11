@@ -9,44 +9,36 @@ import Home from './src/Pages/Home';
 import {UserInfoContext, UserInfoProvide} from './src/Context/UserInfo';
 import SetUserInfo from './src/Pages/SetUserInfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {fetchVerifyToken} from './src/apis/login';
 
 const queryClient = new QueryClient();
 const Stack = createNativeStackNavigator();
 
 function Main() {
-  const {qq, token, setToken, setQQ} = useContext(UserInfoContext);
+  const {status, setStatus} = useContext(UserInfoContext);
   const navigation = useNavigation<any>();
+  const {mutateAsync: verify} = fetchVerifyToken();
+
   useEffect(() => {
-    async function getLocalStorage() {
-      const token = await AsyncStorage.getItem('ZL_APP_TOKEN');
-      const qq = await AsyncStorage.getItem('ZL_APP_QQ');
-      setQQ(qq!);
-      setToken(token!);
-    }
-    getLocalStorage();
-  }, []);
-  useEffect(() => {
-    if (token) {
-      // 如果有token的话
-      if (qq) {
-        // 如果有QQ直接去Home
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'Home'}],
-        });
+    async function init() {
+      const token = (await AsyncStorage.getItem('ZL_APP_TOKEN')) as any;
+      // 验证token
+      const res = await verify({token});
+      if (res.isSuccess) {
+        setStatus('Home');
       } else {
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'SetUser'}],
-        });
+        setStatus('Login');
       }
-    } else {
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'Login'}],
-      });
     }
-  }, [qq, token]);
+    init();
+  }, []);
+
+  useEffect(() => {
+    navigation.reset({
+      index: 0,
+      routes: [{name: status}],
+    });
+  }, [status]);
 
   return (
     <Stack.Navigator
