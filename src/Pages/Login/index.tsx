@@ -96,14 +96,7 @@ export default function Login() {
         if (res.isSetUser) {
           Toast.show({description: '首次登录需设置个人信息'});
           // 进入设置个人信息页面，不存储任何东西
-          navigation.reset({
-            index: 0,
-            routes: [{name: 'SetUser'}],
-            // params: {
-            //   qq: user,
-            //   token: res.token,
-            // },
-          });
+          setToken(res.token);
         } else {
           // 进入主页，存储所有信息
           Toast.show({description: '登录成功'});
@@ -111,10 +104,6 @@ export default function Login() {
           setQQ(user);
           await AsyncStorage.setItem('ZL_APP_TOKEN', res.token);
           await AsyncStorage.setItem('ZL_APP_QQ', user);
-          navigation.reset({
-            index: 0,
-            routes: [{name: 'Home'}],
-          });
         }
         setUser('');
         setCode('');

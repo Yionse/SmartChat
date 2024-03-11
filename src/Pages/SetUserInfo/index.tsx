@@ -1,4 +1,4 @@
-import {Image, View, Input, Text, Radio, Button} from 'native-base';
+import {Image, View, Input, Text, Radio, Button, Checkbox} from 'native-base';
 import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {Animated, Easing, StyleSheet} from 'react-native';
 import AnimateBackBox from '../../Components/AnimateBackBox';
@@ -14,15 +14,7 @@ export default function SetUserInfo() {
   const boxHeight = useRef(new Animated.Value(0)).current;
   const route = useRoute<RouteProp<{params: {qq: string}}>>();
   const [nickname, setNickname] = useState(route.params?.qq || '');
-  const {data} = getHobbyList();
-  const hobbyList = useMemo(() => {
-    return data?.hobbyList.map(item => {
-      return {
-        label: item.name,
-        value: item.name,
-      };
-    });
-  }, [data]);
+  const {data: hobbyList} = getHobbyList();
   const navigation = useNavigation<any>();
   const styles = StyleSheet.create({
     titleText: {
@@ -58,10 +50,7 @@ export default function SetUserInfo() {
     // 处理表单提交，例如验证和发送数据
     // ...
     // 你可以导航到下一个屏幕或根据需要进行处理
-    navigation.reset({
-      index: 0,
-      routes: [{name: 'Home'}],
-    });
+    setQQ(route.params?.qq || '');
   };
   return (
     <AnimateBackBox>
@@ -138,7 +127,17 @@ export default function SetUserInfo() {
             />
           </View>
           <View style={styles.formContainer}>
-            <Text style={styles.formTitle}>爱好</Text>
+            <Text style={styles.formTitle}>爱好：</Text>
+            <Checkbox.Group
+              onChange={setHobbies}
+              value={hobbies}
+              accessibilityLabel="选择爱好"
+              display={'flex'}
+              flexDirection={'row'}>
+              {hobbyList?.hobbyList.map(item => (
+                <Checkbox value={item.name}>{item.name}</Checkbox>
+              ))}
+            </Checkbox.Group>
           </View>
         </View>
         <Button onPress={handleSubmit} my={8} mx={4} borderRadius={'full'}>
