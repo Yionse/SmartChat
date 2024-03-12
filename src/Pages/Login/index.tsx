@@ -22,7 +22,6 @@ export default function Login() {
   const [isDisabledCodeBtn, setIDisabledCodeBtn] = useState(false);
   const [count, setCount] = useState(59);
   const btnTimer = useRef<null>();
-  const navigation = useNavigation<any>();
 
   const styles = StyleSheet.create({
     titleText: {
@@ -33,7 +32,7 @@ export default function Login() {
     },
   });
 
-  const {setToken, setStatus, token, qq, setQQ} = useContext(UserInfoContext);
+  const {setToken, setStatus, token} = useContext(UserInfoContext);
   const {mutateAsync: sendCode} = fetchSendCode();
   const {mutateAsync: login} = fetchLogin();
 
@@ -91,15 +90,15 @@ export default function Login() {
       const res = await login({qq: user, code, sendTime: +new Date() + ''});
       if (res.token) {
         if (res.isSetUser) {
+          setToken(res.token);
           Toast.show({description: '首次登录需设置个人信息'});
           // 进入设置个人信息页面，不存储任何东西
           setStatus('SetUser');
-          setQQ(user);
-          setToken(res.token);
         } else {
           // 进入主页，存储所有信息
+          await AsyncStorage.setItem('ZL_APP_TOKEN', res.token);
           Toast.show({description: '登录成功'});
-          setToken(res.token);
+          setStatus('Home');
         }
         setUser('');
         setCode('');

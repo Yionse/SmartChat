@@ -1,23 +1,33 @@
 import React, {useState, createContext} from 'react';
+import {TUserInfo} from '../apis/types';
 
-interface TUserInfo {
+interface TUserInfoContext {
   token: string;
   setToken: React.Dispatch<React.SetStateAction<string>>;
   status: 'Login' | 'Home' | 'SetUser';
   setStatus: React.Dispatch<React.SetStateAction<'Login' | 'Home' | 'SetUser'>>;
-  qq: string;
-  setQQ: React.Dispatch<React.SetStateAction<string>>;
+  userInfo: TUserInfo;
+  setUserInfo: React.Dispatch<React.SetStateAction<TUserInfo>>;
 }
 
-export const UserInfoContext = createContext<TUserInfo>({} as TUserInfo);
+export const UserInfoContext = createContext<TUserInfoContext>(
+  {} as TUserInfoContext,
+);
 
 export function UserInfoProvide(props: any) {
   const [token, setToken] = useState<string>('');
   const [status, setStatus] = useState<'Login' | 'Home' | 'SetUser'>('Login');
-  const [qq, setQQ] = useState<string>('');
+  const [userInfo, setUserInfo] = useState<TUserInfo>({} as TUserInfo);
   return (
     <UserInfoContext.Provider
-      value={{setToken, token, status, setStatus, qq, setQQ}}>
+      value={{
+        setToken,
+        token,
+        status,
+        setStatus,
+        userInfo,
+        setUserInfo,
+      }}>
       {props.children}
     </UserInfoContext.Provider>
   );

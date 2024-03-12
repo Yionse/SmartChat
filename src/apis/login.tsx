@@ -29,6 +29,6 @@ export function fetchSetUserInfo() {
 
 export function fetchVerifyToken() {
   return useMutation(async (data: {token: string}) =>
-    post<TVerify>('/login/verify', data),
+    post<{userInfo: TUserInfo}>('/login/verify', data),
   );
 }
