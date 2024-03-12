@@ -11,7 +11,10 @@ export function fetchSendCode() {
 export function fetchLogin() {
   return useMutation(
     async (data: {qq: string; code: string; sendTime: string}) =>
-      post<{token: string; isSetUser: boolean}>('/login/lg', data),
+      post<{token: string; isSetUser: boolean; userInfo: TUserInfo}>(
+        '/login/lg',
+        data,
+      ),
   );
 }
 

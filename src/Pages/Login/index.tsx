@@ -15,6 +15,7 @@ import {UserInfoContext} from '../../Context/UserInfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppName from '../../Components/AppName';
 import {useNavigation} from '@react-navigation/native';
+import SetUserInfo from '../SetUserInfo';
 
 export default function Login() {
   const [user, setUser] = useState<string>('');
@@ -32,7 +33,7 @@ export default function Login() {
     },
   });
 
-  const {setToken, setStatus, token} = useContext(UserInfoContext);
+  const {setToken, setStatus, token, setUserInfo} = useContext(UserInfoContext);
   const {mutateAsync: sendCode} = fetchSendCode();
   const {mutateAsync: login} = fetchLogin();
 
@@ -98,6 +99,7 @@ export default function Login() {
           // 进入主页，存储所有信息
           await AsyncStorage.setItem('ZL_APP_TOKEN', res.token);
           Toast.show({description: '登录成功'});
+          setUserInfo(res.userInfo);
           setStatus('Home');
         }
         setUser('');
