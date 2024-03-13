@@ -9,6 +9,7 @@ export interface TUserInfo {
   sex: string;
   userImg: string;
   hobbyList: string;
+  location?: string;
 }
 
 export interface TVerify {

@@ -31,7 +31,23 @@ export function fetchSetUserInfo() {
 }
 
 export function fetchVerifyToken() {
-  return useMutation(async (data: {token: string}) =>
+  return useMutation(async (data: {token: string; location: string}) =>
     post<{userInfo: TUserInfo}>('/login/verify', data),
   );
+}
+
+export async function getIpLocation() {
+  return await fetch('http://ip-api.com/json')
+    .then(response => response.json())
+    .then(({query, country, city, regionName}) => {
+      return {
+        query,
+        country,
+        city,
+        regionName,
+      };
+    })
+    .catch(error => {
+      console.error('获取地理位置信息失败:', error);
+    });
 }

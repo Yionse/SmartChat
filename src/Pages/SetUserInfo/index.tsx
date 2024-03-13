@@ -8,26 +8,24 @@ import {
   Checkbox,
   Toast,
 } from 'native-base';
-import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Animated, Easing, StyleSheet} from 'react-native';
 import AnimateBackBox from '../../Components/AnimateBackBox';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {UserInfoContext} from '../../Context/UserInfo';
-import {fetchSetUserInfo, getHobbyList} from '../../apis/login';
-import {HobbyList} from '../../apis/types';
+import {fetchSetUserInfo, getHobbyList, getIpLocation} from '../../apis/login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getChineseRegionName} from '@/utils/getChineseRegionName';
+import {TUserInfo} from '@/apis/types';
 
 export default function SetUserInfo() {
-  const {setToken, token, setStatus} = useContext(UserInfoContext);
+  const {qq, token, setStatus} = useContext(UserInfoContext);
   const [gender, setGender] = useState('女');
   const [signature, setSignature] = useState('');
   const [hobbies, setHobbies] = useState<any>([]);
   const boxHeight = useRef(new Animated.Value(0)).current;
-  const route = useRoute<RouteProp<{params: {qq: string}}>>();
-  const [nickname, setNickname] = useState(route.params?.qq || '');
+  const [nickname, setNickname] = useState(qq);
   const {data: hobbyList} = getHobbyList();
   const {mutateAsync: setUserInfo} = fetchSetUserInfo();
-  const navigation = useNavigation<any>();
   const styles = StyleSheet.create({
     titleText: {
       height: 60,
@@ -59,16 +57,18 @@ export default function SetUserInfo() {
   }, []);
   const handleSubmit = async () => {
     if (nickname && gender && hobbies.length !== 0) {
-      const res = await setUserInfo({
-        qq: route.params?.qq || '',
-        userImg: `https://q1.qlogo.cn/g?b=qq&nk=${
-          route.params.qq === '1' ? '2458015575' : route.params.qq
-        }&s=5`,
+      const locationInfo = await getIpLocation();
+      const params: TUserInfo = {
+        qq: qq,
+        userImg: `https://q1.qlogo.cn/g?b=qq&nk=2458015575&s=5`,
         userName: nickname,
         sex: gender,
         hobbyList: hobbies.join('-') as any,
-      });
+        location: getChineseRegionName(locationInfo?.regionName),
+      };
+      const res = await setUserInfo(params);
       if (res.isSuccess) {
+        setUserInfo(params);
         await AsyncStorage.setItem('ZL_APP_TOKEN', token);
         setStatus('Home');
       } else {

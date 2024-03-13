@@ -8,7 +8,6 @@ export default function Message() {
   return (
     <>
       <Text>信息</Text>
-      <Button onPress={async () => setStatus('SetUser')}>去个人信息</Button>
       <Button
         onPress={async () => {
           setToken('');

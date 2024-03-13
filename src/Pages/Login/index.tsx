@@ -14,8 +14,6 @@ import {fetchLogin, fetchSendCode} from '../../apis/login';
 import {UserInfoContext} from '../../Context/UserInfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppName from '../../Components/AppName';
-import {useNavigation} from '@react-navigation/native';
-import SetUserInfo from '../SetUserInfo';
 
 export default function Login() {
   const [user, setUser] = useState<string>('');
@@ -33,7 +31,8 @@ export default function Login() {
     },
   });
 
-  const {setToken, setStatus, token, setUserInfo} = useContext(UserInfoContext);
+  const {setToken, setStatus, token, setUserInfo, setQQ} =
+    useContext(UserInfoContext);
   const {mutateAsync: sendCode} = fetchSendCode();
   const {mutateAsync: login} = fetchLogin();
 
@@ -88,10 +87,15 @@ export default function Login() {
   const loginHandle = async () => {
     const regex = /^\d+$/;
     if (regex.test(user) && regex.test(code) && code.length === 6) {
-      const res = await login({qq: user, code, sendTime: +new Date() + ''});
+      const res = await login({
+        qq: user,
+        code,
+        sendTime: +new Date() + '',
+      });
       if (res.token) {
         if (res.isSetUser) {
           setToken(res.token);
+          setQQ(user);
           Toast.show({description: '首次登录需设置个人信息'});
           // 进入设置个人信息页面，不存储任何东西
           setStatus('SetUser');
