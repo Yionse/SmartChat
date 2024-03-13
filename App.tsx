@@ -1,56 +1,18 @@
-import React, {useContext, useEffect} from 'react';
+import React from 'react';
 import 'react-native-gesture-handler';
-import {NativeBaseProvider, Toast} from 'native-base';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import {NativeBaseProvider} from 'native-base';
+import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {QueryClient, QueryClientProvider} from 'react-query';
-import Login from './src/Pages/Login';
-import Home from './src/Pages/Home';
-import {UserInfoContext, UserInfoProvide} from './src/Context/UserInfo';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {fetchVerifyToken, getIpLocation} from './src/apis/login';
-import SetUserInfo from './src/Pages/SetUserInfo';
-import {getChineseRegionName} from '@/utils/getChineseRegionName';
+import Login from '@/Pages/Login';
+import Home from '@/Pages/Home';
+import {UserInfoProvide} from '@/Context/UserInfo';
+import SetUserInfo from '@/Pages/SetUserInfo';
 
 const queryClient = new QueryClient();
 const Stack = createNativeStackNavigator();
 
 function Main() {
-  const {status, setStatus, setUserInfo} = useContext(UserInfoContext);
-  const navigation = useNavigation<any>();
-  const {mutateAsync: verify} = fetchVerifyToken();
-
-  useEffect(() => {
-    async function init() {
-      const token = (await AsyncStorage.getItem('ZL_APP_TOKEN')) as any;
-      // 验证token
-      if (token) {
-        const ipInfo = await getIpLocation();
-        Toast.show({description: getChineseRegionName(ipInfo?.regionName)});
-
-        const res = await verify({
-          token,
-          location: getChineseRegionName(ipInfo?.regionName),
-        });
-        if (res.userInfo.hobbyList) {
-          setStatus('Home');
-          setUserInfo(res.userInfo);
-        } else {
-          Toast.show({description: '登录已失效'});
-          setStatus('Login');
-        }
-      }
-    }
-    init();
-  }, []);
-
-  useEffect(() => {
-    navigation.reset({
-      index: 0,
-      routes: [{name: status}],
-    });
-  }, [status]);
-
   return (
     <Stack.Navigator
       screenOptions={{

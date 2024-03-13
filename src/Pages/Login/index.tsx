@@ -1,4 +1,5 @@
 import React, {
+  memo,
   useCallback,
   useContext,
   useEffect,
@@ -9,19 +10,26 @@ import {Button, Input, Text, Toast, View} from 'native-base';
 import {Animated, Easing, StyleSheet} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-import AnimateBackBox from '../../Components/AnimateBackBox';
-import {fetchLogin, fetchSendCode} from '../../apis/login';
-import {UserInfoContext} from '../../Context/UserInfo';
+import AnimateBackBox from '@/Components/AnimateBackBox';
+import {
+  fetchLogin,
+  fetchSendCode,
+  fetchVerifyToken,
+  getIpLocation,
+} from '@/apis/login';
+import {UserInfoContext} from '@/Context/UserInfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AppName from '../../Components/AppName';
+import AppName from '@/Components/AppName';
+import {getChineseRegionName} from '@/utils/getChineseRegionName';
+import {useNavigation} from '@react-navigation/native';
 
-export default function Login() {
+function Login() {
   const [user, setUser] = useState<string>('');
   const [code, setCode] = useState<string>('');
   const [isDisabledCodeBtn, setIDisabledCodeBtn] = useState(false);
   const [count, setCount] = useState(59);
   const btnTimer = useRef<null>();
-
+  const navigation = useNavigation<any>();
   const styles = StyleSheet.create({
     titleText: {
       height: 60,
@@ -31,10 +39,10 @@ export default function Login() {
     },
   });
 
-  const {setToken, setStatus, token, setUserInfo, setQQ} =
-    useContext(UserInfoContext);
+  const {setUserInfo} = useContext(UserInfoContext);
   const {mutateAsync: sendCode} = fetchSendCode();
   const {mutateAsync: login} = fetchLogin();
+  const {mutateAsync: verify} = fetchVerifyToken();
 
   const boxHeight = useRef(new Animated.Value(0)).current;
 
@@ -46,19 +54,34 @@ export default function Login() {
       useNativeDriver: false, // Set to true for better performance (requires useNativeDriver-compatible properties)
     }).start();
   };
-  startAnimation();
 
   useEffect(() => {
-    async function getToken() {
-      const token = (await AsyncStorage.getItem('ZL_APP_TOKEN')) || '';
-      setToken(token);
-      if (!token) {
+    async function init() {
+      const token = (await AsyncStorage.getItem('ZL_APP_TOKEN')) as any;
+      // 验证token
+      if (token) {
+        const ipInfo = await getIpLocation();
+        const res = await verify({
+          token,
+          location: getChineseRegionName(ipInfo?.regionName),
+        });
+        if (res.userInfo.hobbyList) {
+          setUserInfo(res.userInfo);
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Home'}],
+          });
+        } else {
+          Toast.show({description: '登录已失效'});
+          startAnimation();
+        }
+      } else {
         startAnimation();
       }
     }
-    getToken();
+    init();
     return () => clearInterval(btnTimer.current as any);
-  }, [token]);
+  }, []);
 
   const codeBtnHandle = useCallback(async () => {
     if (!user) {
@@ -94,17 +117,21 @@ export default function Login() {
       });
       if (res.token) {
         if (res.isSetUser) {
-          setToken(res.token);
-          setQQ(user);
           Toast.show({description: '首次登录需设置个人信息'});
           // 进入设置个人信息页面，不存储任何东西
-          setStatus('SetUser');
+          navigation.navigate('SetUser', {
+            qq: user,
+            token: res.token,
+          });
         } else {
           // 进入主页，存储所有信息
           await AsyncStorage.setItem('ZL_APP_TOKEN', res.token);
           Toast.show({description: '登录成功'});
           setUserInfo(res.userInfo);
-          setStatus('Home');
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Home'}],
+          });
         }
         setUser('');
         setCode('');
@@ -180,3 +207,5 @@ export default function Login() {
     </AnimateBackBox>
   );
 }
+
+export default Login;

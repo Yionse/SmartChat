@@ -10,20 +10,23 @@ import {
 } from 'native-base';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Animated, Easing, StyleSheet} from 'react-native';
-import AnimateBackBox from '../../Components/AnimateBackBox';
-import {UserInfoContext} from '../../Context/UserInfo';
-import {fetchSetUserInfo, getHobbyList, getIpLocation} from '../../apis/login';
+import AnimateBackBox from '@/Components/AnimateBackBox';
+import {fetchSetUserInfo, getHobbyList, getIpLocation} from '@/apis/login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getChineseRegionName} from '@/utils/getChineseRegionName';
 import {TUserInfo} from '@/apis/types';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {UserInfoContext} from '@/Context/UserInfo';
 
 export default function SetUserInfo() {
-  const {qq, token, setStatus} = useContext(UserInfoContext);
+  const {setUserInfo: setUserInfoContext} = useContext(UserInfoContext);
   const [gender, setGender] = useState('女');
   const [signature, setSignature] = useState('');
   const [hobbies, setHobbies] = useState<any>([]);
+  const route = useRoute<RouteProp<{params: {qq: string; token: string}}>>();
   const boxHeight = useRef(new Animated.Value(0)).current;
-  const [nickname, setNickname] = useState(qq);
+  const [nickname, setNickname] = useState(route.params?.qq || '');
+  const navigation = useNavigation<any>();
   const {data: hobbyList} = getHobbyList();
   const {mutateAsync: setUserInfo} = fetchSetUserInfo();
   const styles = StyleSheet.create({
@@ -59,7 +62,7 @@ export default function SetUserInfo() {
     if (nickname && gender && hobbies.length !== 0) {
       const locationInfo = await getIpLocation();
       const params: TUserInfo = {
-        qq: qq,
+        qq: route.params?.qq,
         userImg: `https://q1.qlogo.cn/g?b=qq&nk=2458015575&s=5`,
         userName: nickname,
         sex: gender,
@@ -68,9 +71,12 @@ export default function SetUserInfo() {
       };
       const res = await setUserInfo(params);
       if (res.isSuccess) {
-        setUserInfo(params);
-        await AsyncStorage.setItem('ZL_APP_TOKEN', token);
-        setStatus('Home');
+        setUserInfoContext(params);
+        await AsyncStorage.setItem('ZL_APP_TOKEN', route.params.token);
+        navigation.reset({
+          route: 0,
+          routes: [{name: 'Home'}],
+        });
       } else {
         Toast.show({description: '网络错误'});
       }
@@ -170,22 +176,9 @@ export default function SetUserInfo() {
               ))}
             </Checkbox.Group>
           </View>
-          <View display={'flex'} flexDirection={'row'}>
-            <Button
-              onPress={async () => setStatus('Login')}
-              my={8}
-              borderRadius={'full'}
-              width={'50%'}>
-              <Text>重新登录</Text>
-            </Button>
-            <Button
-              onPress={handleSubmit}
-              my={8}
-              borderRadius={'full'}
-              width={'50%'}>
-              <Text>提交</Text>
-            </Button>
-          </View>
+          <Button onPress={handleSubmit} my={8} borderRadius={'full'}>
+            <Text>提交</Text>
+          </Button>
         </View>
       </Animated.View>
     </AnimateBackBox>
