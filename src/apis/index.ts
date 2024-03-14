@@ -1,8 +1,10 @@
 import axios from 'axios';
+import {Toast} from 'native-base';
 import Config from 'react-native-config';
 
 const httpInstance = axios.create({
-  baseURL: 'https://10.6.0.92:9901/',
+  baseURL: 'https://10.6.0.92:9901',
+  // baseURL: 'https://chat.zhangtc.online',
   timeout: 5000,
 });
 
@@ -21,6 +23,7 @@ httpInstance.interceptors.response.use(
     return result;
   },
   error => {
+    Toast.show({description: error.message, duration: 2000});
     return Promise.reject(error);
   },
 );

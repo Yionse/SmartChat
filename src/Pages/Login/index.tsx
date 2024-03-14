@@ -1,5 +1,4 @@
 import React, {
-  memo,
   useCallback,
   useContext,
   useEffect,
@@ -61,18 +60,22 @@ function Login() {
       // 验证token
       if (token) {
         const ipInfo = await getIpLocation();
+        const location = getChineseRegionName(ipInfo?.regionName);
         const res = await verify({
           token,
-          location: getChineseRegionName(ipInfo?.regionName),
+          location,
         });
         if (res.userInfo.hobbyList) {
-          setUserInfo(res.userInfo);
+          setUserInfo({
+            ...res.userInfo,
+            location,
+          });
           navigation.reset({
             index: 0,
             routes: [{name: 'Home'}],
           });
         } else {
-          Toast.show({description: '登录已失效'});
+          Toast.show({description: '登录已失效', duration: 1000});
           startAnimation();
         }
       } else {
@@ -85,7 +88,7 @@ function Login() {
 
   const codeBtnHandle = useCallback(async () => {
     if (!user) {
-      Toast.show({description: '请输入QQ'});
+      Toast.show({description: '请输入QQ', duration: 1000});
       return;
     }
     setIDisabledCodeBtn(true);
@@ -96,6 +99,7 @@ function Login() {
     await sendCode({qq: user});
     Toast.show({
       description: '已发送验证码',
+      duration: 1000,
     });
   }, [user]);
 
@@ -110,14 +114,16 @@ function Login() {
   const loginHandle = async () => {
     const regex = /^\d+$/;
     if (regex.test(user) && regex.test(code) && code.length === 6) {
+      const ipInfo = await getIpLocation();
       const res = await login({
         qq: user,
         code,
         sendTime: +new Date() + '',
+        location: getChineseRegionName(ipInfo?.regionName),
       });
       if (res.token) {
         if (res.isSetUser) {
-          Toast.show({description: '首次登录需设置个人信息'});
+          Toast.show({description: '首次登录需设置个人信息', duration: 2000});
           // 进入设置个人信息页面，不存储任何东西
           navigation.navigate('SetUser', {
             qq: user,
@@ -126,8 +132,11 @@ function Login() {
         } else {
           // 进入主页，存储所有信息
           await AsyncStorage.setItem('ZL_APP_TOKEN', res.token);
-          Toast.show({description: '登录成功'});
-          setUserInfo(res.userInfo);
+          Toast.show({description: '登录成功', duration: 1000});
+          setUserInfo({
+            ...res.userInfo,
+            location: getChineseRegionName(ipInfo?.regionName),
+          });
           navigation.reset({
             index: 0,
             routes: [{name: 'Home'}],
@@ -137,7 +146,7 @@ function Login() {
         setCode('');
         setCount(() => 0);
       } else {
-        Toast.show({description: '登录失败'});
+        Toast.show({description: '登录失败', duration: 1000});
       }
     } else {
       Toast.show({

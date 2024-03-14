@@ -2,6 +2,27 @@ import React, {useContext} from 'react';
 import {Image, Spacer, Text, View} from 'native-base';
 import {UserInfoContext} from '@/Context/UserInfo';
 
+function getRadomColors() {
+  const colors: string[] = [];
+  const color: string[] = [
+    'primary',
+    'secondary',
+    'tertiary',
+    'danger',
+    'error',
+    'success',
+    'info',
+  ];
+  const degree: number[] = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
+  color.forEach(colorItem => {
+    degree.forEach(degreeItem => {
+      colors.push(colorItem + '.' + degreeItem);
+    });
+  });
+  const index = Math.floor(Math.random() * colors.length);
+  return colors[index];
+}
+
 export default function DrawerContent() {
   const {userInfo} = useContext(UserInfoContext);
   return (
@@ -19,7 +40,25 @@ export default function DrawerContent() {
         <Text fontSize={'2xl'} textAlign={'center'}>
           {userInfo.userName}
         </Text>
-        <Text>{userInfo.signature}</Text>
+        <View px={4}>
+          <View display={'flex'} flexDirection={'row'} flexWrap={'wrap'}>
+            <Text fontSize={'xl'}>
+              {userInfo.signature}阿达阿萨德阿达阿萨德阿萨德阿达是的阿是大声道啊
+            </Text>
+            {userInfo.hobbyList.split('-').map(item => (
+              <Text
+                p={1}
+                px={4}
+                bg={getRadomColors()}
+                m={1}
+                color={'white'}
+                borderRadius={12}
+                key={item}>
+                {item}
+              </Text>
+            ))}
+          </View>
+        </View>
         <View px={4}>
           <Text>设备信息</Text>
         </View>

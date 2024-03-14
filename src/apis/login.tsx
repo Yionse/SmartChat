@@ -1,6 +1,7 @@
 import {useMutation, useQuery} from 'react-query';
 import {ClientError, get, post} from '.';
 import {HobbyList, TUserInfo, TVerify} from './types';
+import {Toast} from 'native-base';
 
 export function fetchSendCode() {
   return useMutation<any, ClientError, {qq: string}>(data =>
@@ -10,7 +11,12 @@ export function fetchSendCode() {
 
 export function fetchLogin() {
   return useMutation(
-    async (data: {qq: string; code: string; sendTime: string}) =>
+    async (data: {
+      qq: string;
+      code: string;
+      sendTime: string;
+      location: string;
+    }) =>
       post<{token: string; isSetUser: boolean; userInfo: TUserInfo}>(
         '/login/lg',
         data,
@@ -48,6 +54,9 @@ export async function getIpLocation() {
       };
     })
     .catch(error => {
-      console.error('获取地理位置信息失败:', error);
+      Toast.show({
+        description: '获取地理位置信息失败:' + error.message,
+        duration: 3000,
+      });
     });
 }

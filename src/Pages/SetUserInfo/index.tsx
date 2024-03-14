@@ -79,10 +79,10 @@ export default function SetUserInfo() {
           routes: [{name: 'Home'}],
         });
       } else {
-        Toast.show({description: '网络错误'});
+        Toast.show({description: '网络错误', duration: 2000});
       }
     } else {
-      Toast.show({description: '请填入信息'});
+      Toast.show({description: '请填入信息', duration: 1000});
     }
   };
   return (
