@@ -68,6 +68,7 @@ export default function SetUserInfo() {
         sex: gender,
         hobbyList: hobbies.join('-') as any,
         location: getChineseRegionName(locationInfo?.regionName),
+        signature,
       };
       const res = await setUserInfo(params);
       if (res.isSuccess) {
@@ -123,6 +124,7 @@ export default function SetUserInfo() {
               height={'40px'}
               flex={1}
               ml={8}
+              maxLength={10}
             />
           </View>
           <View style={styles.formContainer}>
@@ -154,6 +156,7 @@ export default function SetUserInfo() {
               onChangeText={setSignature}
               width={'70%'}
               height={'40px'}
+              maxLength={20}
               flex={1}
               ml={8}
             />

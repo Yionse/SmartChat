@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Config from 'react-native-config';
 
 const httpInstance = axios.create({
   baseURL: 'https://10.6.0.92:9901/',
@@ -41,12 +42,14 @@ export const fetchFile = async (url: string, data: any, param?: any) => {
   const defaultConfig = {
     method: 'POST',
     body: data,
-
+    Headers: {
+      'X-Token': Config.API_TOKEN,
+    },
     ...param,
   };
   try {
     const response = await fetch(
-      `https://10.6.0.92:9901/files` + url,
+      `https://files.zhangtc.online` + url,
       defaultConfig,
     );
     if (!response.ok) {

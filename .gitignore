@@ -35,6 +35,9 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
+# dotenv environment variable files
+.env
+
 # BUCK
 buck-out/
 \.buckd/

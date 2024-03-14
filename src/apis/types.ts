@@ -10,6 +10,7 @@ export interface TUserInfo {
   userImg: string;
   hobbyList: string;
   location?: string;
+  signature: string;
 }
 
 export interface TVerify {
