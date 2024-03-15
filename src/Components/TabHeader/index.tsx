@@ -20,7 +20,9 @@ export default function TabHeader({
       height={'50px'}
       lineHeight={'50px'}
       px={4}>
-      <View width={'20%'}>{leftElement}</View>
+      <View width={'20%'} height={'50px'}>
+        {leftElement}
+      </View>
       <View width={'60%'} flex={1}>
         <Text
           textAlign={'center'}

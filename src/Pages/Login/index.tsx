@@ -40,7 +40,7 @@ function Login() {
 
   const {setUserInfo} = useContext(UserInfoContext);
   const {mutateAsync: sendCode} = fetchSendCode();
-  const {mutateAsync: login} = fetchLogin();
+  const {mutateAsync: login, isLoading} = fetchLogin();
   const {mutateAsync: verify} = fetchVerifyToken();
 
   const boxHeight = useRef(new Animated.Value(0)).current;
@@ -176,7 +176,7 @@ function Login() {
           style={{
             padding: 10,
             display: 'flex',
-            justifyContent: 'space-between',
+            justifyContent: 'flex-end',
           }}>
           <Input
             maxLength={13}
@@ -208,7 +208,7 @@ function Login() {
             }
             placeholder="输入邮箱验证码"
           />
-          <Button borderRadius={22} onPress={loginHandle}>
+          <Button borderRadius={22} onPress={loginHandle} isLoading={isLoading}>
             登录
           </Button>
         </View>

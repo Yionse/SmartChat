@@ -1,7 +1,20 @@
 import React, {useContext} from 'react';
-import {Image, Spacer, Text, View} from 'native-base';
+import {Image, Pressable, Spacer, Text, View} from 'native-base';
 import {UserInfoContext} from '@/Context/UserInfo';
-
+import {StyleSheet} from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import {useNavigation} from '@react-navigation/native';
+export const styles = StyleSheet.create({
+  menuTitle: {
+    width: '100%',
+    height: 40,
+    lineHeight: 40,
+    fontSize: 22,
+    borderBottomColor: 'white',
+    borderBottomWidth: 1,
+    borderStyle: 'solid',
+  },
+});
 function getRadomColors() {
   const colors: string[] = [];
   const color: string[] = [
@@ -24,7 +37,9 @@ function getRadomColors() {
 }
 
 export default function DrawerContent() {
+  const navigation = useNavigation<any>();
   const {userInfo} = useContext(UserInfoContext);
+
   return (
     <View
       display={'flex'}
@@ -38,13 +53,18 @@ export default function DrawerContent() {
         style={{borderTopLeftRadius: 32, borderTopRightRadius: 32}}
         py={8}>
         <Text fontSize={'2xl'} textAlign={'center'}>
+          <AntDesign
+            name={userInfo.sex === '男' ? 'man' : 'woman'}
+            color={userInfo.sex === '男' ? 'blue' : 'pink'}
+            size={22}
+          />
           {userInfo.userName}
         </Text>
-        <View px={4}>
+        <Text fontSize={'xl'} px={4}>
+          {userInfo.signature}
+        </Text>
+        <View px={4} mb={4}>
           <View display={'flex'} flexDirection={'row'} flexWrap={'wrap'}>
-            <Text fontSize={'xl'}>
-              {userInfo.signature}阿达阿萨德阿达阿萨德阿萨德阿达是的阿是大声道啊
-            </Text>
             {userInfo.hobbyList.split('-').map(item => (
               <Text
                 p={1}
@@ -59,9 +79,20 @@ export default function DrawerContent() {
             ))}
           </View>
         </View>
-        <View px={4}>
-          <Text>设备信息</Text>
-        </View>
+        <Pressable
+          onPress={() => navigation.navigate('UserInfo')}
+          _pressed={{bg: 'primary.100'}}>
+          <View px={4}>
+            <Text style={styles.menuTitle}>个人主页</Text>
+          </View>
+        </Pressable>
+        <Pressable
+          onPress={() => navigation.navigate('DeviceInfo')}
+          _pressed={{bg: 'primary.100'}}>
+          <View px={4}>
+            <Text style={styles.menuTitle}>设备信息</Text>
+          </View>
+        </Pressable>
         <Spacer flex={1} />
         <View px={4}>
           <Text>设置区域</Text>

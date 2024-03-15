@@ -42,8 +42,13 @@ export function fetchVerifyToken() {
   );
 }
 
-export async function getIpLocation() {
-  return await fetch('http://ip-api.com/json')
+export async function getIpLocation(): Promise<{
+  query: string;
+  country: string;
+  city: string;
+  regionName: string;
+}> {
+  return (await fetch('http://ip-api.com/json')
     .then(response => response.json())
     .then(({query, country, city, regionName}) => {
       return {
@@ -58,5 +63,5 @@ export async function getIpLocation() {
         description: '获取地理位置信息失败:' + error.message,
         duration: 3000,
       });
-    });
+    })) as any;
 }
