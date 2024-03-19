@@ -4,6 +4,7 @@ import {UserInfoContext} from '@/Context/UserInfo';
 import {StyleSheet} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
+import {getRadomColors} from '@/utils/getRadomColors';
 export const styles = StyleSheet.create({
   menuTitle: {
     width: '100%',
@@ -15,26 +16,6 @@ export const styles = StyleSheet.create({
     borderStyle: 'solid',
   },
 });
-function getRadomColors() {
-  const colors: string[] = [];
-  const color: string[] = [
-    'primary',
-    'secondary',
-    'tertiary',
-    'danger',
-    'error',
-    'success',
-    'info',
-  ];
-  const degree: number[] = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
-  color.forEach(colorItem => {
-    degree.forEach(degreeItem => {
-      colors.push(colorItem + '.' + degreeItem);
-    });
-  });
-  const index = Math.floor(Math.random() * colors.length);
-  return colors[index];
-}
 
 export default function DrawerContent() {
   const navigation = useNavigation<any>();
@@ -83,7 +64,7 @@ export default function DrawerContent() {
           onPress={() => navigation.navigate('UserInfo')}
           _pressed={{bg: 'primary.100'}}>
           <View px={4}>
-            <Text style={styles.menuTitle}>个人主页</Text>
+            <Text style={styles.menuTitle}>修改资料</Text>
           </View>
         </Pressable>
         <Pressable
@@ -107,13 +88,15 @@ export default function DrawerContent() {
         zIndex={2}
         width={'100%'}>
         <View p={2} bg={'white'} borderRadius={'full'}>
-          <Image
-            source={{uri: userInfo.userImg}}
-            width={20}
-            height={20}
-            borderRadius={'full'}
-            alt="头像"
-          />
+          <Pressable onPress={() => navigation.navigate('UserInfo')}>
+            <Image
+              source={{uri: userInfo.userImg}}
+              width={20}
+              height={20}
+              borderRadius={'full'}
+              alt="头像"
+            />
+          </Pressable>
         </View>
         <Text fontSize={'xs'} position={'absolute'} right={4} bottom={10}>
           IP:{userInfo.location}

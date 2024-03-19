@@ -18,6 +18,25 @@ import {TUserInfo} from '@/apis/types';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {UserInfoContext} from '@/Context/UserInfo';
 
+export const styles = StyleSheet.create({
+  titleText: {
+    height: 60,
+    lineHeight: 60,
+    fontSize: 30,
+  },
+  formTitle: {
+    fontSize: 24,
+    height: 40,
+    lineHeight: 40,
+  },
+  formContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 20,
+  },
+});
+
 export default function SetUserInfo() {
   const {setUserInfo: setUserInfoContext} = useContext(UserInfoContext);
   const [gender, setGender] = useState('女');
@@ -29,24 +48,7 @@ export default function SetUserInfo() {
   const navigation = useNavigation<any>();
   const {data: hobbyList} = getHobbyList();
   const {mutateAsync: setUserInfo} = fetchSetUserInfo();
-  const styles = StyleSheet.create({
-    titleText: {
-      height: 60,
-      lineHeight: 60,
-      fontSize: 30,
-    },
-    formTitle: {
-      fontSize: 24,
-      height: 40,
-      lineHeight: 40,
-    },
-    formContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      marginVertical: 20,
-    },
-  });
+
   const startAnimation = () => {
     Animated.timing(boxHeight, {
       toValue: 90,

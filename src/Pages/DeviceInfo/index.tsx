@@ -11,7 +11,6 @@ import {
 } from 'react-native-device-info';
 import {styles} from '@/Components/DrawerContent';
 import {getIpLocation} from '@/apis/login';
-import {transform} from '@/apis/utils';
 
 export default function DeviceInfo() {
   const [deviceInfo, setDeviceInfo] = useState<any>();
@@ -26,11 +25,9 @@ export default function DeviceInfo() {
         deviceName: (await getDeviceName()) || '未知',
         diskStorage: (await getFreeDiskStorage()) || 0,
         ip: location?.query,
-        position: await transform({
-          query: `${location?.country} ${location?.regionName} ${location.city}`,
-          isTranslateEnglish: false,
-          isNotLocation: false,
-        }),
+        position:
+          `${location?.country} ${location?.regionName} ${location.city}` ||
+          '未知',
         manufacturer: (await getManufacturer()) || '未知',
       });
     }
@@ -45,7 +42,7 @@ export default function DeviceInfo() {
       <Text style={styles.menuTitle}>当前电量：{deviceInfo?.batteryLevel}</Text>
       <Text style={styles.menuTitle}>当前运营商：{deviceInfo?.carrier}</Text>
       <Text style={styles.menuTitle}>
-        设备制造商：{deviceInfo?.manufactrer}
+        设备制造商：{deviceInfo?.manufacturer}
       </Text>
       <ScrollView
         width={'100%'}

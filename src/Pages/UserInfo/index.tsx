@@ -1,6 +1,134 @@
-import React from 'react';
-import {Text} from 'native-base';
+import React, {useContext, useRef, useState} from 'react';
+import {
+  Button,
+  Checkbox,
+  Image,
+  Input,
+  Radio,
+  Text,
+  Toast,
+  View,
+} from 'native-base';
+import {UserInfoContext} from '@/Context/UserInfo';
+import {styles} from '../SetUserInfo';
+import {fetchUpdateUserInfo, getHobbyList, getUserInfo} from '@/apis/login';
+import {useNavigation} from '@react-navigation/native';
 
 export default function UserInfo() {
-  return <Text>用户信息</Text>;
+  const {data: hobbyList} = getHobbyList();
+  const {userInfo, setUserInfo} = useContext(UserInfoContext);
+  const [nickname, setNickname] = useState(userInfo.userName);
+  const [gender, setGender] = useState(userInfo.sex);
+  const [signature, setSignature] = useState(userInfo.signature);
+  const [hobbies, setHobbies] = useState<any>(userInfo.hobbyList.split('-'));
+  const {mutateAsync} = fetchUpdateUserInfo();
+  const {mutateAsync: getUser} = getUserInfo();
+  const navigation = useNavigation<any>();
+  return (
+    <View
+      style={{
+        width: '100%',
+        height: '100%',
+      }}>
+      <View
+        style={{
+          padding: 10,
+          display: 'flex',
+          justifyContent: 'space-between',
+          flex: 1,
+        }}>
+        <Image
+          source={{uri: userInfo.userImg}}
+          size={'sm'}
+          borderRadius={'full'}
+          alt="头像"
+        />
+        <View style={styles.formContainer}>
+          <Text style={styles.formTitle}>昵称:</Text>
+          <Input
+            placeholder="昵称"
+            value={nickname}
+            onChangeText={setNickname}
+            width={'70%'}
+            height={'40px'}
+            flex={1}
+            ml={8}
+            maxLength={10}
+          />
+        </View>
+        <View style={styles.formContainer}>
+          <Text style={styles.formTitle}>性别:</Text>
+          <Radio.Group
+            name="gender"
+            defaultValue={gender}
+            width={'70%'}
+            flex={1}
+            ml={8}
+            display={'flex'}
+            flexDirection={'row'}
+            height={'40px'}
+            paddingTop={'10px'}
+            onChange={e => setGender(e)}>
+            <Radio value="女" colorScheme={'pink'}>
+              女
+            </Radio>
+            <Radio value="男" colorScheme={'blue'} ml={4}>
+              男
+            </Radio>
+          </Radio.Group>
+        </View>
+        <View style={styles.formContainer}>
+          <Text style={styles.formTitle}>个性签名:</Text>
+          <Input
+            placeholder="个性签名"
+            value={signature}
+            onChangeText={setSignature}
+            width={'70%'}
+            height={'40px'}
+            maxLength={20}
+            flex={1}
+            ml={8}
+          />
+        </View>
+        <View style={styles.formContainer}>
+          <Text style={styles.formTitle}>爱好：</Text>
+          <Checkbox.Group
+            onChange={setHobbies}
+            value={hobbies}
+            accessibilityLabel="选择爱好"
+            display={'flex'}
+            flexDirection={'row'}
+            style={{
+              flexWrap: 'wrap',
+            }}>
+            {hobbyList?.hobbyList.map(item => (
+              <Checkbox mx={4} value={item.name} key={item.id}>
+                {item.name}
+              </Checkbox>
+            ))}
+          </Checkbox.Group>
+        </View>
+        <Button
+          my={8}
+          borderRadius={'full'}
+          onPress={async () => {
+            await mutateAsync({
+              userImg: userInfo.userImg,
+              userName: nickname,
+              sex: gender,
+              hobbyList: hobbies.join('-') as any,
+              location: userInfo.location,
+              signature,
+              qq: userInfo.qq,
+            });
+            const res = await getUser(userInfo.qq);
+            setUserInfo(res.userInfo);
+            Toast.show({description: '修改成功', duration: 1000});
+            navigation.goBack();
+          }}>
+          <Text>提交</Text>
+        </Button>
+      </View>
+    </View>
+  );
 }

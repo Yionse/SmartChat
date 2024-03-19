@@ -7,6 +7,7 @@ function truncate(q: string): string {
   return q.substring(0, 10) + len + q.substring(len - 10, len);
 }
 
+// 翻译服务要money，那点免费额度哪够用，果断停掉
 export async function transform({
   query,
   isTranslateEnglish = true,

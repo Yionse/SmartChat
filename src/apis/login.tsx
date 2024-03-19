@@ -65,3 +65,15 @@ export async function getIpLocation(): Promise<{
       });
     })) as any;
 }
+
+export function fetchUpdateUserInfo() {
+  return useMutation(async (data: TUserInfo) =>
+    post<TVerify>('/login/upInfo', data),
+  );
+}
+
+export function getUserInfo() {
+  return useMutation(async (qq: string) =>
+    get<{userInfo: TUserInfo}>('login/getInfo', {qq}),
+  );
+}
