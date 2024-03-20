@@ -37,7 +37,7 @@ export function fetchSetUserInfo() {
 }
 
 export function fetchVerifyToken() {
-  return useMutation(async (data: {token: string; location: string}) =>
+  return useMutation(async (data: {token: string; location?: string}) =>
     post<{userInfo: TUserInfo}>('/login/verify', data),
   );
 }

@@ -62,6 +62,20 @@ export default function TabHome() {
                     />
                   </Pressable>
                 }
+                rightElement={
+                  <View
+                    flex={1}
+                    display={'flex'}
+                    flexDirection={'row'}
+                    justifyContent={'flex-end'}
+                    paddingTop={'8px'}>
+                    <AntDesign
+                      name="search1"
+                      size={30}
+                      color={colors.primary[200]}
+                    />
+                  </View>
+                }
               />
             );
           },
@@ -101,7 +115,7 @@ export default function TabHome() {
           header() {
             return (
               <TabHeader
-                title="广场"
+                title="论坛"
                 rightElement={
                   <View
                     flex={1}
@@ -109,11 +123,13 @@ export default function TabHome() {
                     flexDirection={'row'}
                     justifyContent={'flex-end'}
                     paddingTop={'8px'}>
-                    <AntDesign
-                      name="addfile"
-                      size={30}
-                      color={colors.primary[200]}
-                    />
+                    <Pressable onPress={() => navigation.navigate('Forum')}>
+                      <AntDesign
+                        name="addfile"
+                        size={30}
+                        color={colors.primary[200]}
+                      />
+                    </Pressable>
                   </View>
                 }
               />

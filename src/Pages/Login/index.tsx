@@ -59,16 +59,16 @@ function Login() {
       const token = (await AsyncStorage.getItem('ZL_APP_TOKEN')) as any;
       // 验证token
       if (token) {
-        const ipInfo = await getIpLocation();
-        const location = getChineseRegionName(ipInfo?.regionName);
+        // const ipInfo = await getIpLocation();
+        // const location = getChineseRegionName(ipInfo?.regionName);
         const res = await verify({
           token,
-          location,
+          // location,
         });
         if (res.userInfo.hobbyList) {
           setUserInfo({
             ...res.userInfo,
-            location,
+            // location,
           });
           navigation.reset({
             index: 0,
@@ -112,6 +112,10 @@ function Login() {
   }, [count]);
 
   const loginHandle = async () => {
+    if (isLoading) {
+      Toast.show({description: '正在登录', duration: 1000});
+      return;
+    }
     const regex = /^\d+$/;
     if (regex.test(user) && regex.test(code) && code.length === 6) {
       const ipInfo = await getIpLocation();

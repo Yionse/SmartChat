@@ -16,3 +16,9 @@ export interface TUserInfo {
 export interface TVerify {
   isSuccess: boolean;
 }
+
+export interface TForumChat {
+  user: string;
+  content: string;
+  createTime: string;
+}
