@@ -16,6 +16,8 @@ target 'MyApp' do
 
   pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+
   target 'MyAppTests' do
     inherit! :complete
     # Pods for testing

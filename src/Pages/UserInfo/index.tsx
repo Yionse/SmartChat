@@ -13,6 +13,8 @@ import {UserInfoContext} from '@/Context/UserInfo';
 import {styles} from '../SetUserInfo';
 import {fetchUpdateUserInfo, getHobbyList, getUserInfo} from '@/apis/login';
 import {useNavigation} from '@react-navigation/native';
+import * as ImagePicker from 'react-native-image-picker';
+import {Pressable} from 'react-native';
 
 export default function UserInfo() {
   const {data: hobbyList} = getHobbyList();
@@ -24,6 +26,27 @@ export default function UserInfo() {
   const {mutateAsync} = fetchUpdateUserInfo();
   const {mutateAsync: getUser} = getUserInfo();
   const navigation = useNavigation<any>();
+
+  const [selectedImage, setSelectedImage] = useState(null);
+  // const selectImage = () => {
+  //   ImagePicker.launchImageLibrary({mediaType: 'photo'}, response => {
+  //     console.log(response, '123123');
+  //     if (!response.didCancel) {
+  //       // 处理选择图片后的逻辑
+  //       console.log('Selected image URI:', response.assets);
+  //     }
+  //   });
+  // };
+
+  // const uploadImage = async (uri: any) => {
+  //   const formData = new FormData();
+  //   formData.append('photo', {
+  //     uri,
+  //     name: 'photo.jpg',
+  //     type: 'image/jpeg',
+  //   });
+  // };
+
   return (
     <View
       style={{
@@ -37,12 +60,18 @@ export default function UserInfo() {
           justifyContent: 'space-between',
           flex: 1,
         }}>
+        {/* <Pressable
+          onPress={Toast.show({
+            description: '暂无支持修改头像',
+            duration: 1000,
+          })}> */}
         <Image
           source={{uri: userInfo.userImg}}
           size={'sm'}
           borderRadius={'full'}
           alt="头像"
         />
+        {/* </Pressable> */}
         <View style={styles.formContainer}>
           <Text style={styles.formTitle}>昵称:</Text>
           <Input

@@ -5,6 +5,7 @@ import {StyleSheet} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 import {getRadomColors} from '@/utils/getRadomColors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export const styles = StyleSheet.create({
   menuTitle: {
     width: '100%',
@@ -19,7 +20,7 @@ export const styles = StyleSheet.create({
 
 export default function DrawerContent() {
   const navigation = useNavigation<any>();
-  const {userInfo} = useContext(UserInfoContext);
+  const {userInfo, setUserInfo} = useContext(UserInfoContext);
 
   return (
     <View
@@ -46,7 +47,7 @@ export default function DrawerContent() {
         </Text>
         <View px={4} mb={4}>
           <View display={'flex'} flexDirection={'row'} flexWrap={'wrap'}>
-            {userInfo.hobbyList.split('-').map(item => (
+            {userInfo?.hobbyList?.split('-')?.map(item => (
               <Text
                 p={1}
                 px={4}
@@ -74,10 +75,20 @@ export default function DrawerContent() {
             <Text style={styles.menuTitle}>设备信息</Text>
           </View>
         </Pressable>
-        <Spacer flex={1} />
-        <View px={4}>
-          <Text>设置区域</Text>
-        </View>
+        <Pressable
+          onPress={async () => {
+            await AsyncStorage.setItem('ZL_APP_TOKEN', '');
+            setUserInfo({} as any);
+            navigation.reset({
+              index: 0,
+              routes: [{name: 'Login'}],
+            });
+          }}
+          _pressed={{bg: 'primary.100'}}>
+          <View px={4}>
+            <Text style={styles.menuTitle}>退出登录</Text>
+          </View>
+        </Pressable>
       </View>
       <View
         position={'absolute'}
