@@ -18,8 +18,22 @@ export interface TVerify {
 }
 
 export interface TForumChat {
+  id?: number;
   user: string;
   content: string;
   createTime: string;
-  userInfo?: TUserInfo;
+  userImg?: string;
+  userName?: string;
+  userId?: string;
+  commentList?: TForumComment[];
+}
+
+export interface TForumComment {
+  id?: number;
+  forumId: number;
+  commentContent: string;
+  userId: number;
+  commentTime: string;
+  userImg?: string;
+  userName?: string;
 }
