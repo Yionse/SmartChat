@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {Button, ScrollView, TextArea, Toast, View} from 'native-base';
+import {Button, ScrollView, TextArea, Toast} from 'native-base';
 import {fetchCreateForumChat} from '@/apis/forum';
 import {UserInfoContext} from '@/Context/UserInfo';
 import {useNavigation} from '@react-navigation/native';

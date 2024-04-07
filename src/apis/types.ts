@@ -21,4 +21,5 @@ export interface TForumChat {
   user: string;
   content: string;
   createTime: string;
+  userInfo?: TUserInfo;
 }
