@@ -61,7 +61,7 @@ export async function getIpLocation(): Promise<{
     .catch(error => {
       Toast.show({
         description: '获取地理位置信息失败:' + error.message,
-        duration: 3000,
+        duration: 1000,
       });
     })) as any;
 }

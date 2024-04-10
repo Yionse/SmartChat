@@ -15,6 +15,7 @@ export default function Forum() {
         h={80}
         placeholder="输入内容"
         value={content}
+        maxLength={190}
         onChangeText={e => setContent(e)}
       />
       <Button

@@ -36,7 +36,8 @@ export default function Square() {
                 borderBottomWidth: 1,
               }}
               my={2}
-              px={2}>
+              px={2}
+              key={item.id}>
               <Pressable
                 onPress={() => {
                   currentForum.current = item.id;
@@ -62,7 +63,11 @@ export default function Square() {
               </Pressable>
               {item?.commentList?.map(comment => {
                 return (
-                  <View display={'flex'} flexDirection={'row'} my={1}>
+                  <View
+                    display={'flex'}
+                    flexDirection={'row'}
+                    my={1}
+                    key={comment.id}>
                     <Image
                       source={{uri: comment.userImg}}
                       borderRadius="full"
