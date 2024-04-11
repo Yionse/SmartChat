@@ -22,6 +22,9 @@ import _ from 'lodash';
 function UserList({users}: {users: TUserInfo[]}) {
   const [colorsRef, setColorsRef] = useState<string[][]>([]);
   useEffect(() => {
+    if (colorsRef.length > 0) {
+      return;
+    }
     const twoArr: string[][] = [];
     users.forEach(user => {
       const oneArr: string[] = [];

@@ -43,7 +43,8 @@ export default function Square() {
                   currentForum.current = item.id;
                   setIsOpen(true);
                 }}>
-                <View display={'flex'} flexDirection={'row'}>
+                <View className=" flex flex-row">
+                  {/* <View display={'flex'} flexDirection={'row'}> */}
                   <Image
                     source={{uri: item?.userImg}}
                     width={10}
@@ -72,6 +73,7 @@ export default function Square() {
                       source={{uri: comment.userImg}}
                       borderRadius="full"
                       style={{width: 20, height: 20}}
+                      alt={comment.commentContent}
                     />
                     <Box mx={1} />
                     <Text>
