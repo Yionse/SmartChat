@@ -13,6 +13,7 @@ import {useNavigation} from '@react-navigation/native';
 import {fetchUpdateUserInfo, getIpLocation} from '@/apis/login';
 import {getChineseRegionName} from '@/utils/getChineseRegionName';
 import {UserInfoContext} from '@/Context/UserInfo';
+import Search from '../Search';
 
 const Drawer = createDrawerNavigator();
 
@@ -98,6 +99,27 @@ export default function Home() {
               />
             );
           },
+        }}
+      />
+      <Drawer.Screen
+        name="Search"
+        component={Search}
+        options={{
+          unmountOnBlur: true,
+          // header() {
+          //   return (
+          //     <TabHeader
+          //       title="搜搜用户"
+          //       leftElement={
+          //         <View flex={1} paddingTop={'12px'}>
+          //           <Pressable onPress={() => navigation.goBack()}>
+          //             <AntDesign name="arrowleft" size={26} />
+          //           </Pressable>
+          //         </View>
+          //       }
+          //     />
+          //   );
+          // },
         }}
       />
     </Drawer.Navigator>

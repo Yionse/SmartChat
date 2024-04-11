@@ -19,18 +19,17 @@ export default function Contact() {
             好友申请
           </Text>
           <Text
-            width={50}
             style={{
-              ...styles.contact,
-              height: 40,
-              lineHeight: 40,
+              width: 30,
+              height: 30,
+              lineHeight: 30,
               backgroundColor: 'red',
               textAlign: 'center',
-              marginTop: 5,
+              marginTop: 10,
             }}
             position={'absolute'}
             right={4}
-            borderRadius={'full'}
+            borderRadius={'lg'}
             color={'white'}>
             1
           </Text>

@@ -96,11 +96,13 @@ export default function TabHome() {
                     flexDirection={'row'}
                     justifyContent={'flex-end'}
                     paddingTop={'8px'}>
-                    <AntDesign
-                      name="adduser"
-                      size={30}
-                      color={colors.primary[200]}
-                    />
+                    <Pressable onPress={() => navigation.navigate('Search')}>
+                      <AntDesign
+                        name="adduser"
+                        size={30}
+                        color={colors.primary[200]}
+                      />
+                    </Pressable>
                   </View>
                 }
               />
@@ -112,6 +114,7 @@ export default function TabHome() {
         name="square"
         component={Square}
         options={{
+          unmountOnBlur: true,
           header() {
             return (
               <TabHeader
