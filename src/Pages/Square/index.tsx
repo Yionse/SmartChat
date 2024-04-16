@@ -6,7 +6,6 @@ import {
   Input,
   Modal,
   Pressable,
-  ScrollView,
   Text,
   Toast,
   View,
@@ -15,10 +14,22 @@ import {
 import {fetchCommentForum, useFetchPersonalForum} from '@/apis/forum';
 import {UserInfoContext} from '@/Context/UserInfo';
 import moment from 'moment';
+import {FlatList} from 'react-native';
+
+/**
+ * 待优化：
+ *  1、可以增加筛选功能，只筛选出当前用户
+ *  2、增加搜索功能
+ *  3、探讨发布图片的可能性
+ */
 
 export default function Square() {
   const {userInfo} = useContext(UserInfoContext);
-  const {data, refetch} = useFetchPersonalForum() || [];
+  const {
+    data,
+    refetch,
+    isLoading: getDataListLoading,
+  } = useFetchPersonalForum() || [];
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [comment, setComment] = useState<string>('');
   const currentForum = useRef<number>();
@@ -26,69 +37,67 @@ export default function Square() {
   const {colors} = useTheme();
   return (
     <>
-      <ScrollView height="full" zIndex={9999}>
-        {data?.map(item => {
-          return (
-            <Box
-              style={{
-                borderStyle: 'solid',
-                borderColor: '#fff',
-                borderBottomWidth: 1,
-              }}
-              my={2}
-              px={2}
-              key={item.id}>
-              <Pressable
-                onPress={() => {
-                  currentForum.current = item.id;
-                  setIsOpen(true);
-                }}>
-                <View className=" flex flex-row">
-                  {/* <View display={'flex'} flexDirection={'row'}> */}
+      <FlatList
+        onEndReached={() => console.log('123123')}
+        onEndReachedThreshold={0.1}
+        onRefresh={async () => await refetch()}
+        refreshing={getDataListLoading}
+        renderItem={({item}) => (
+          <Box
+            style={{
+              borderStyle: 'solid',
+              borderColor: '#fff',
+              borderBottomWidth: 1,
+            }}
+            my={2}
+            px={2}
+            key={item.id}>
+            <Pressable
+              onPress={() => {
+                currentForum.current = item.id;
+                setIsOpen(true);
+              }}>
+              <View className=" flex flex-row">
+                <Image
+                  source={{uri: item?.userImg}}
+                  width={10}
+                  height={10}
+                  borderRadius={'full'}
+                  alt={item.user}
+                />
+                <Box mx={2} />
+                <Text fontSize={'xl'}>{item?.userName}</Text>
+              </View>
+              <Text fontSize={'2xl'}>{item.content}</Text>
+              <Text textAlign={'right'} color={'#ccc'}>
+                {moment(Number(item.createTime)).format('YYYY-MM-DD HH:mm:ss')}
+              </Text>
+            </Pressable>
+            {item?.commentList?.map((comment: any) => {
+              return (
+                <View
+                  display={'flex'}
+                  flexDirection={'row'}
+                  my={1}
+                  key={comment.id}>
                   <Image
-                    source={{uri: item?.userImg}}
-                    width={10}
-                    height={10}
-                    borderRadius={'full'}
-                    alt={item.user}
+                    source={{uri: comment.userImg}}
+                    borderRadius="full"
+                    style={{width: 20, height: 20}}
+                    alt={comment.commentContent}
                   />
-                  <Box mx={2} />
-                  <Text fontSize={'xl'}>{item?.userName}</Text>
+                  <Box mx={1} />
+                  <Text>
+                    <Text color={colors.primary[600]}>{comment.userName}</Text>:
+                    {comment.commentContent}
+                  </Text>
                 </View>
-                <Text fontSize={'2xl'}>{item.content}</Text>
-                <Text textAlign={'right'} color={'#ccc'}>
-                  {moment(Number(item.createTime)).format(
-                    'YYYY-MM-DD HH:mm:ss',
-                  )}
-                </Text>
-              </Pressable>
-              {item?.commentList?.map(comment => {
-                return (
-                  <View
-                    display={'flex'}
-                    flexDirection={'row'}
-                    my={1}
-                    key={comment.id}>
-                    <Image
-                      source={{uri: comment.userImg}}
-                      borderRadius="full"
-                      style={{width: 20, height: 20}}
-                      alt={comment.commentContent}
-                    />
-                    <Box mx={1} />
-                    <Text>
-                      <Text color={colors.primary[600]}>
-                        {comment.userName}
-                      </Text>
-                      :{comment.commentContent}
-                    </Text>
-                  </View>
-                );
-              })}
-            </Box>
-          );
-        })}
-      </ScrollView>
+              );
+            })}
+          </Box>
+        )}
+        data={data}
+      />
       <Modal
         isOpen={isOpen}
         onClose={() => {

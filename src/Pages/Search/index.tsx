@@ -12,7 +12,7 @@ import {
 } from 'native-base';
 import {fetchSearchUser, getRecommendContact} from '@/apis/user';
 import {UserInfoContext} from '@/Context/UserInfo';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useNavigationBuilder} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {StyleSheet} from 'react-native';
 import {getRadomColors} from '@/utils/getRadomColors';
@@ -20,6 +20,7 @@ import {TUserInfo} from '@/apis/types';
 import _ from 'lodash';
 
 function UserList({users}: {users: TUserInfo[]}) {
+  const navigation = useNavigation<any>();
   const [colorsRef, setColorsRef] = useState<string[][]>([]);
   useEffect(() => {
     if (colorsRef.length > 0) {
@@ -61,7 +62,6 @@ function UserList({users}: {users: TUserInfo[]}) {
             <Text>
               {user.userName} &nbsp;&nbsp;&nbsp;ip:{user.location}
             </Text>
-            <Text>{user.hobbyList}</Text>
             <View display={'flex'} flexDirection={'row'}>
               {user.hobbyList
                 .split('-')
@@ -77,10 +77,21 @@ function UserList({users}: {users: TUserInfo[]}) {
                   </Text>
                 ))}
               {user.hobbyList.split('-').length > 3 && <Text>...</Text>}
-              {/* <Text>{user?.signature}</Text> */}
             </View>
           </View>
-          <Button style={{height: 36, marginLeft: 'auto'}}>添加</Button>
+          <Button
+            style={{height: 36, marginLeft: 'auto'}}
+            onPress={() =>
+              navigation.navigate('Verify', {
+                userName: user.userName,
+                userImg: user.userImg,
+                qq: user.qq,
+                sex: user.sex,
+                desc: user.signature,
+              })
+            }>
+            添加
+          </Button>
         </View>
       ))}
     </>
