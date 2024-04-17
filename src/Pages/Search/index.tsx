@@ -10,7 +10,7 @@ import {
   Toast,
   View,
 } from 'native-base';
-import {fetchSearchUser, getRecommendContact} from '@/apis/user';
+import {fetchSearchUser, getRecommendContact} from '@/apis/contact';
 import {UserInfoContext} from '@/Context/UserInfo';
 import {useNavigation, useNavigationBuilder} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -36,7 +36,7 @@ function UserList({users}: {users: TUserInfo[]}) {
       twoArr.push(oneArr);
     });
     setColorsRef(twoArr);
-  }, [users]);
+  }, [users, colorsRef]);
   return (
     <>
       {users?.map((user, index) => (

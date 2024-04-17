@@ -1,8 +1,9 @@
-import React from 'react';
-import {Box, Button, Image, Input, Text, View} from 'native-base';
-import {RouteProp, useRoute} from '@react-navigation/native';
+import React, {useContext, useState} from 'react';
+import {Box, Button, Image, Input, Text, Toast, View} from 'native-base';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {transform} from 'lodash';
+import {fetchRequestAddContact} from '@/apis/contact';
+import {UserInfoContext} from '@/Context/UserInfo';
 
 interface TUserList {
   userName: string;
@@ -13,6 +14,9 @@ interface TUserList {
 }
 
 export default function Verify() {
+  const [verifyInfo, setVerifyInfo] = useState<string>();
+  const [fromRemark, setFromRemark] = useState<string>();
+  const {userInfo} = useContext(UserInfoContext);
   const route = useRoute<
     RouteProp<
       {
@@ -21,6 +25,8 @@ export default function Verify() {
       'Verify'
     >
   >();
+  const {mutateAsync: addContact} = fetchRequestAddContact();
+  const navigation = useNavigation<any>();
   return (
     <View flex={1} position={'relative'}>
       <UserList info={route.params} />
@@ -33,6 +39,8 @@ export default function Verify() {
           placeholder="请输入验证消息"
           pl={4}
           variant={'underlined'}
+          value={verifyInfo}
+          onChangeText={e => setVerifyInfo(e)}
         />
       </Box>
       <Box className="flex flex-row items-center bg-white mt-2 p-4">
@@ -44,11 +52,28 @@ export default function Verify() {
           placeholder="请输入对方的备注"
           pl={4}
           variant={'underlined'}
+          value={fromRemark}
+          onChangeText={e => setFromRemark(e)}
         />
         <Text fontSize={'lg'}>备注：</Text>
       </Box>
       <View className="absolute bottom-12 flex flex-row justify-center w-full">
-        <Button className="w-4/5">提交</Button>
+        <Button
+          className="w-4/5"
+          onPress={async () => {
+            await addContact({
+              from: userInfo.qq,
+              target: route.params.qq,
+              verifyInfo:
+                verifyInfo || `${route.params.userName}申请添加你为好友`,
+              status: 0,
+              fromRemark,
+            });
+            Toast.show({description: '发起好友申请成功', duration: 1000});
+            navigation.navigate('Search');
+          }}>
+          提交
+        </Button>
       </View>
     </View>
   );

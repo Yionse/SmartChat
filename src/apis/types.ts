@@ -37,3 +37,14 @@ export interface TForumComment {
   userImg?: string;
   userName?: string;
 }
+
+export interface TRequestAddContact {
+  id?: number;
+  from: string;
+  target: string;
+  verifyInfo?: string;
+  // 1-正常，0-待同意，-1-已拒绝
+  status: number;
+  fromRemark?: string;
+  targetRemark?: string;
+}
