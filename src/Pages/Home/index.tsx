@@ -14,7 +14,8 @@ import {fetchUpdateUserInfo, getIpLocation} from '@/apis/login';
 import {getChineseRegionName} from '@/utils/getChineseRegionName';
 import {UserInfoContext} from '@/Context/UserInfo';
 import Search from '../Search';
-import Verify from '../Verify';
+import Append from '../Append';
+import ContactManagement from '../ContactManagement';
 
 const Drawer = createDrawerNavigator();
 
@@ -110,13 +111,33 @@ export default function Home() {
         }}
       />
       <Drawer.Screen
-        name="Verify"
-        component={Verify}
+        name="Append"
+        component={Append}
         options={{
           header() {
             return (
               <TabHeader
-                title="验证消息"
+                title="添加好友"
+                leftElement={
+                  <View flex={1} paddingTop={'12px'}>
+                    <Pressable onPress={() => navigation.goBack(-1)}>
+                      <AntDesign name="arrowleft" size={26} />
+                    </Pressable>
+                  </View>
+                }
+              />
+            );
+          },
+        }}
+      />
+      <Drawer.Screen
+        name="ContactManagement"
+        component={ContactManagement}
+        options={{
+          header() {
+            return (
+              <TabHeader
+                title="好友申请"
                 leftElement={
                   <View flex={1} paddingTop={'12px'}>
                     <Pressable onPress={() => navigation.goBack(-1)}>

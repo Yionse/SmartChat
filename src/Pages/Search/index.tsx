@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   Button,
   Image,
@@ -12,14 +12,14 @@ import {
 } from 'native-base';
 import {fetchSearchUser, getRecommendContact} from '@/apis/contact';
 import {UserInfoContext} from '@/Context/UserInfo';
-import {useNavigation, useNavigationBuilder} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {StyleSheet} from 'react-native';
 import {getRadomColors} from '@/utils/getRadomColors';
 import {TUserInfo} from '@/apis/types';
 import _ from 'lodash';
 
-function UserList({users}: {users: TUserInfo[]}) {
+function UserListSearch({users}: {users: TUserInfo[]}) {
   const navigation = useNavigation<any>();
   const [colorsRef, setColorsRef] = useState<string[][]>([]);
   useEffect(() => {
@@ -29,14 +29,14 @@ function UserList({users}: {users: TUserInfo[]}) {
     const twoArr: string[][] = [];
     users.forEach(user => {
       const oneArr: string[] = [];
-      const length = user.hobbyList.split('-')?.length;
+      const length = user?.hobbyList?.split('-')?.length;
       for (let i = 0; i < length; i++) {
         oneArr.push(getRadomColors());
       }
       twoArr.push(oneArr);
     });
     setColorsRef(twoArr);
-  }, [users, colorsRef]);
+  }, [users]);
   return (
     <>
       {users?.map((user, index) => (
@@ -60,14 +60,15 @@ function UserList({users}: {users: TUserInfo[]}) {
           />
           <View mx={1}>
             <Text>
-              {user.userName} &nbsp;&nbsp;&nbsp;ip:{user.location}
+              {user?.userName} &nbsp;&nbsp;&nbsp;ip:{user.location}
             </Text>
             <View display={'flex'} flexDirection={'row'}>
-              {user.hobbyList
-                .split('-')
+              {user?.hobbyList
+                ?.split('-')
                 .slice(0, 3)
                 ?.map((hobby: string, twoIndex: number) => (
                   <Text
+                    key={hobby}
                     bg={colorsRef?.[index]?.[twoIndex]}
                     mx={1}
                     p={1}
@@ -76,18 +77,18 @@ function UserList({users}: {users: TUserInfo[]}) {
                     {hobby}
                   </Text>
                 ))}
-              {user.hobbyList.split('-').length > 3 && <Text>...</Text>}
+              {user?.hobbyList?.split('-').length > 3 && <Text>...</Text>}
             </View>
           </View>
           <Button
             style={{height: 36, marginLeft: 'auto'}}
             onPress={() =>
-              navigation.navigate('Verify', {
+              navigation.navigate('Append', {
                 userName: user.userName,
                 userImg: user.userImg,
                 qq: user.qq,
                 sex: user.sex,
-                desc: user.signature,
+                signature: user.signature,
               })
             }>
             添加
@@ -108,7 +109,7 @@ export default function Search() {
     },
   });
   const {userInfo} = useContext(UserInfoContext);
-  const {data} = getRecommendContact({user: userInfo.qq});
+  const {data: recommendContact} = getRecommendContact({user: userInfo.qq});
   const {mutateAsync, isLoading} = fetchSearchUser();
   return (
     <ScrollView height={'full'}>
@@ -158,12 +159,12 @@ export default function Search() {
       {searchData?.length > 0 && (
         <View mt={2} px={2} py={4} background={'white'}>
           <Text mb={2}>搜索结果：</Text>
-          <UserList users={searchData} />
+          <UserListSearch users={searchData} />
         </View>
       )}
       <View mt={2} px={2} py={4} background={'white'}>
         <Text mb={2}>根据您的爱好为您推荐如下联系人：</Text>
-        <UserList users={data || []} />
+        <UserListSearch users={recommendContact || []} />
       </View>
     </ScrollView>
   );

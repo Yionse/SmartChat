@@ -11,7 +11,7 @@ import {
   View,
   useTheme,
 } from 'native-base';
-import {fetchCommentForum, useFetchPersonalForum} from '@/apis/forum';
+import {fetchCommentForum, getFetchPersonalForum} from '@/apis/forum';
 import {UserInfoContext} from '@/Context/UserInfo';
 import moment from 'moment';
 import {FlatList} from 'react-native';
@@ -29,7 +29,7 @@ export default function Square() {
     data,
     refetch,
     isLoading: getDataListLoading,
-  } = useFetchPersonalForum() || [];
+  } = getFetchPersonalForum() || [];
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [comment, setComment] = useState<string>('');
   const currentForum = useRef<number>();

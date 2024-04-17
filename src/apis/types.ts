@@ -47,4 +47,5 @@ export interface TRequestAddContact {
   status: number;
   fromRemark?: string;
   targetRemark?: string;
+  userInfo?: TUserInfo;
 }
