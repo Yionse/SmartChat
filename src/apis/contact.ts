@@ -29,3 +29,10 @@ export function getVerifyList(target: string) {
     },
   );
 }
+
+export function fetchUpdateContactStatus() {
+  return useMutation(
+    async (data: {id: number; status: number; targetRemark?: string}) =>
+      post('/contact/verify', data),
+  );
+}

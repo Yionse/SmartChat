@@ -1,13 +1,19 @@
-import React from 'react';
-import {Button, Text} from 'native-base';
+import React, {useRef} from 'react';
+import {Button, Pressable, Text} from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 
-export default function Message() {
+export default function Message({
+  drawerRef,
+}: {
+  drawerRef: React.MutableRefObject<null>;
+}) {
   const navigation = useNavigation<any>();
   return (
     <>
-      <Text>信息</Text>
+      <Pressable onPress={() => drawerRef?.current.openDrawer()}>
+        <Text>信息</Text>
+      </Pressable>
       <Button
         onPress={async () => {
           await AsyncStorage.setItem('ZL_APP_TOKEN', '');

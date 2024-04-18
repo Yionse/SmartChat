@@ -29,7 +29,8 @@ export default function Home() {
       screenOptions={{
         header: () => null,
       }}
-      drawerContent={() => <DrawerContent />}>
+      // drawerContent={() => <DrawerContent />}
+    >
       <Drawer.Screen name="TabHome" component={TabHome} />
     </Drawer.Navigator>
   );

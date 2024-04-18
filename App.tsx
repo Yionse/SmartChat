@@ -99,7 +99,11 @@ function Main() {
           },
         }}
       />
-      <Stack.Screen name="Search" component={Search} />
+      <Stack.Screen
+        name="Search"
+        component={Search}
+        options={{headerShown: false}}
+      />
       <Stack.Screen
         name="Append"
         component={Append}

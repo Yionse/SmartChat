@@ -51,61 +51,65 @@ export default function ContactManagement() {
   const {userInfo} = useContext(UserInfoContext);
   const {data: verifyList, isLoading, refetch} = getVerifyList(userInfo.qq);
   const navigation = useNavigation<any>();
+  const requestList = useMemo(
+    () => verifyList?.filter(item => item.from === userInfo.qq) || [],
+    [verifyList],
+  );
+  const check = useMemo(
+    () => verifyList?.filter(item => item.target === userInfo.qq) || [],
+    [verifyList],
+  );
   return (
     <ScrollView
       flex={1}
       refreshControl={
         <RefreshControl refreshing={isLoading} onRefresh={refetch} />
       }>
-      <Text className="m-1">我发出的</Text>
-      {verifyList
-        ?.filter(item => item.from === userInfo.qq)
-        ?.map(verify => {
-          return (
-            <UserList
-              info={
-                {
-                  ...verify.userInfo,
-                  signature: `我：${verify.verifyInfo}`,
-                } as any
-              }
-              rightElement={buttonMap(
+      {requestList?.length > 0 && <Text className="m-1">我发出的</Text>}
+      {requestList?.map(verify => {
+        return (
+          <UserList
+            info={
+              {
+                ...verify.userInfo,
+                signature: `我：${verify.verifyInfo}`,
+              } as any
+            }
+            rightElement={buttonMap(
+              verify.from,
+              verify.status,
+              userInfo.qq,
+              navigation,
+            )}
+          />
+        );
+      })}
+      {check.length > 0 && <Text className="m-1">我接收的</Text>}
+      {check?.map(verify => {
+        return (
+          <UserList
+            info={
+              {
+                ...verify.userInfo,
+                signature: `消息：${verify.verifyInfo}`,
+              } as any
+            }
+            rightElement={
+              buttonMap(
                 verify.from,
                 verify.status,
                 userInfo.qq,
                 navigation,
-              )}
-            />
-          );
-        })}
-      <Text className="m-1">我接收的</Text>
-      {verifyList
-        ?.filter(item => item.target === userInfo.qq)
-        ?.map(verify => {
-          return (
-            <UserList
-              info={
                 {
                   ...verify.userInfo,
-                  signature: `消息：${verify.verifyInfo}`,
-                } as any
-              }
-              rightElement={
-                buttonMap(
-                  verify.from,
-                  verify.status,
-                  userInfo.qq,
-                  navigation,
-                  {
-                    ...verify.userInfo,
-                    signature: verify.verifyInfo || '',
-                  },
-                  verify.id,
-                ) as any
-              }
-            />
-          );
-        })}
+                  signature: verify.verifyInfo || '',
+                },
+                verify.id,
+              ) as any
+            }
+          />
+        );
+      })}
     </ScrollView>
   );
 }

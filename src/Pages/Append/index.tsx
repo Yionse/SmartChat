@@ -2,7 +2,7 @@ import React, {useContext, useState} from 'react';
 import {Box, Button, Image, Input, Text, Toast, View} from 'native-base';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {fetchRequestAddContact} from '@/apis/contact';
+import {fetchRequestAddContact, fetchUpdateContactStatus} from '@/apis/contact';
 import {UserInfoContext} from '@/Context/UserInfo';
 import {TUserInfo} from '@/apis/types';
 
@@ -19,6 +19,7 @@ export default function Append() {
     >
   >();
   const {mutateAsync: addContact} = fetchRequestAddContact();
+  const {mutateAsync: updateContactStatus} = fetchUpdateContactStatus();
   const navigation = useNavigation<any>();
   return (
     <View flex={1} position={'relative'}>
@@ -54,12 +55,16 @@ export default function Append() {
       <View className="absolute bottom-12 flex flex-row justify-center w-full">
         {route.params?.isVerify ? (
           <>
-            <Text>{route.params.id}</Text>
             <Button
               className="w-1/3"
               onPress={async () => {
+                await updateContactStatus({
+                  id: route.params.id!,
+                  status: 1,
+                  targetRemark: fromRemark,
+                });
                 Toast.show({description: '你们已成为好友', duration: 1000});
-                navigation.navigate('Search');
+                navigation.goBack();
               }}>
               同意
             </Button>
@@ -67,8 +72,12 @@ export default function Append() {
               colorScheme={'danger'}
               className="w-1/3 ml-4"
               onPress={async () => {
+                await updateContactStatus({
+                  id: route.params.id!,
+                  status: -1,
+                });
                 Toast.show({description: '已拒绝该申请', duration: 1000});
-                navigation.navigate('Search');
+                navigation.goBack();
               }}>
               拒绝
             </Button>
