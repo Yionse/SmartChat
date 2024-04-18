@@ -13,7 +13,7 @@ export default function Append() {
   const route = useRoute<
     RouteProp<
       {
-        Append: TUserInfo & {isVerify?: boolean};
+        Append: TUserInfo & {isVerify?: boolean; id?: number};
       },
       'Append'
     >
@@ -54,6 +54,7 @@ export default function Append() {
       <View className="absolute bottom-12 flex flex-row justify-center w-full">
         {route.params?.isVerify ? (
           <>
+            <Text>{route.params.id}</Text>
             <Button
               className="w-1/3"
               onPress={async () => {

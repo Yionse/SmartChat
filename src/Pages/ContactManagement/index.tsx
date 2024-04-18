@@ -12,6 +12,7 @@ export const buttonMap = (
   current: string,
   navigation: any,
   user?: any,
+  id?: number,
 ): React.ReactElement => {
   if (user) {
     console.log(user);
@@ -33,6 +34,7 @@ export const buttonMap = (
               sex: user.sex,
               signature: user.signature,
               isVerify: true,
+              id,
             })
           }>
           验证
@@ -89,10 +91,17 @@ export default function ContactManagement() {
                 } as any
               }
               rightElement={
-                buttonMap(verify.from, verify.status, userInfo.qq, navigation, {
-                  ...verify.userInfo,
-                  signature: verify.verifyInfo || '',
-                }) as any
+                buttonMap(
+                  verify.from,
+                  verify.status,
+                  userInfo.qq,
+                  navigation,
+                  {
+                    ...verify.userInfo,
+                    signature: verify.verifyInfo || '',
+                  },
+                  verify.id,
+                ) as any
               }
             />
           );

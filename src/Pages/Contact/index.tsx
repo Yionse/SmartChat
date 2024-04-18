@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useMemo} from 'react';
+import React, {useContext, useMemo} from 'react';
 import {Pressable, ScrollView, Text, View} from 'native-base';
 import {StyleSheet} from 'react-native';
 import {getVerifyList} from '@/apis/contact';
