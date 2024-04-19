@@ -3,11 +3,7 @@ import {Button, Pressable, Text} from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 
-export default function Message({
-  drawerRef,
-}: {
-  drawerRef: React.MutableRefObject<null>;
-}) {
+export default function Message({drawerRef}: {drawerRef: any}) {
   const navigation = useNavigation<any>();
   return (
     <>

@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useContext, useEffect, useRef} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Image, Pressable, Text, View, useTheme} from 'native-base';
 import TabHeader from '../../Components/TabHeader';
@@ -8,20 +8,39 @@ import Message from '../Message';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useNavigation} from '@react-navigation/native';
 import {DrawerLayoutAndroid} from 'react-native';
+import {UserInfoContext} from '@/Context/UserInfo';
+import {fetchUpdateUserInfo, getIpLocation} from '@/apis/login';
+import {getChineseRegionName} from '@/utils/getChineseRegionName';
+import DrawerContent from '@/Components/DrawerContent';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabHome() {
   const {colors} = useTheme();
   const navigation = useNavigation<any>();
-  const drawerRef = useRef(null);
+  const drawerRef = useRef<any>(null);
+  const {userInfo, setUserInfo} = useContext(UserInfoContext);
+
+  const {mutateAsync} = fetchUpdateUserInfo();
+  useEffect(() => {
+    async function initLocation() {
+      const location = await getIpLocation();
+      const params = {
+        ...userInfo,
+        location: getChineseRegionName(location.regionName),
+      };
+      await mutateAsync(params);
+      setUserInfo(params);
+    }
+    initLocation();
+  }, []);
   return (
     <>
       <DrawerLayoutAndroid
         ref={drawerRef}
         drawerPosition="left"
-        drawerWidth={200}
-        renderNavigationView={() => <Text>123123123</Text>}>
+        drawerWidth={300}
+        renderNavigationView={() => <DrawerContent />}>
         <Tab.Navigator
           screenOptions={({route}) => ({
             tabBarIcon: ({focused, color, size}) => {
@@ -57,7 +76,7 @@ export default function TabHome() {
                   <TabHeader
                     title="消息"
                     leftElement={
-                      <Pressable onPress={() => navigation.openDrawer()}>
+                      <Pressable onPress={() => drawerRef.current.openDrawer()}>
                         <Image
                           source={{
                             uri: `https://q1.qlogo.cn/g?b=qq&nk=${2458015575}&s=5`,
@@ -70,20 +89,20 @@ export default function TabHome() {
                         />
                       </Pressable>
                     }
-                    rightElement={
-                      <View
-                        flex={1}
-                        display={'flex'}
-                        flexDirection={'row'}
-                        justifyContent={'flex-end'}
-                        paddingTop={'8px'}>
-                        <AntDesign
-                          name="search1"
-                          size={30}
-                          color={colors.primary[200]}
-                        />
-                      </View>
-                    }
+                    // rightElement={
+                    //   <View
+                    //     flex={1}
+                    //     display={'flex'}
+                    //     flexDirection={'row'}
+                    //     justifyContent={'flex-end'}
+                    //     paddingTop={'8px'}>
+                    //     <AntDesign
+                    //       name="search1"
+                    //       size={30}
+                    //       color={colors.primary[200]}
+                    //     />
+                    //   </View>
+                    // }
                   />
                 );
               },

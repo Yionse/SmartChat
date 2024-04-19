@@ -7,7 +7,6 @@ import {QueryClient, QueryClientProvider} from 'react-query';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import Login from '@/Pages/Login';
-import Home from '@/Pages/Home';
 import {UserInfoProvide} from '@/Context/UserInfo';
 import SetUserInfo from '@/Pages/SetUserInfo';
 import DeviceInfo from '@/Pages/DeviceInfo';
@@ -17,6 +16,7 @@ import Forum from '@/Pages/Forum';
 import Search from '@/Pages/Search';
 import Append from '@/Pages/Append';
 import ContactManagement from '@/Pages/ContactManagement';
+import TabHome from '@/Pages/TabHome';
 
 const queryClient = new QueryClient();
 const Stack = createNativeStackNavigator();
@@ -36,7 +36,7 @@ function Main() {
       />
       <Stack.Screen
         name="Home"
-        component={Home}
+        component={TabHome}
         options={{headerShown: false}}
       />
       <Stack.Screen
