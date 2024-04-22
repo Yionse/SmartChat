@@ -1,16 +1,16 @@
 import {useMutation, useQuery} from 'react-query';
 import {get, post} from '.';
-import {TRequestAddContact, TUserInfo} from './types';
+import {TContactList, TRequestAddContact, TUserInfo} from './types';
 
 export function getRecommendContact({user}: {user: string}) {
   return useQuery(['recommend', user], async () =>
-    post<TUserInfo[]>('/contact/recommend', {user}),
+    post<TContactList[]>('/contact/recommend', {user}),
   );
 }
 
 export function fetchSearchUser() {
-  return useMutation(async (key: string) =>
-    get<TUserInfo[]>('/contact/search', {key}),
+  return useMutation(async (param: {key: string; from: string}) =>
+    get<TContactList[]>('/contact/search', param),
   );
 }
 

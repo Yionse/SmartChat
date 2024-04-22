@@ -49,3 +49,11 @@ export interface TRequestAddContact {
   targetRemark?: string;
   userInfo?: TUserInfo;
 }
+
+export type TContactList = TUserInfo & {
+  isAdd: {
+    isAdd: boolean;
+    text: string;
+    id: number;
+  };
+};

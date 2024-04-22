@@ -16,10 +16,10 @@ import {useNavigation} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {StyleSheet} from 'react-native';
 import {getRadomColors} from '@/utils/getRadomColors';
-import {TUserInfo} from '@/apis/types';
+import {TContactList, TUserInfo} from '@/apis/types';
 import _ from 'lodash';
 
-function UserListSearch({users}: {users: TUserInfo[]}) {
+function UserListSearch({users}: {users: TContactList[]}) {
   const navigation = useNavigation<any>();
   const [colorsRef, setColorsRef] = useState<string[][]>([]);
   useEffect(() => {
@@ -80,19 +80,25 @@ function UserListSearch({users}: {users: TUserInfo[]}) {
               {user?.hobbyList?.split('-').length > 3 && <Text>...</Text>}
             </View>
           </View>
-          <Button
-            style={{height: 36, marginLeft: 'auto'}}
-            onPress={() =>
-              navigation.navigate('Append', {
-                userName: user.userName,
-                userImg: user.userImg,
-                qq: user.qq,
-                sex: user.sex,
-                signature: user.signature,
-              })
-            }>
-            添加
-          </Button>
+          {user?.isAdd.text === '去验证' || user?.isAdd.isAdd ? (
+            <Button
+              style={{height: 36, marginLeft: 'auto'}}
+              onPress={() => {
+                navigation.navigate('Append', {
+                  userName: user.userName,
+                  userImg: user.userImg,
+                  qq: user.qq,
+                  sex: user.sex,
+                  signature: user.signature,
+                  isVerify: user.isAdd.text === '去验证' ? true : false,
+                  id: user?.isAdd?.id,
+                });
+              }}>
+              {user.isAdd.text === '去验证' ? '去验证' : '添加'}
+            </Button>
+          ) : (
+            <Text style={{marginLeft: 'auto'}}>{user?.isAdd?.text || ''}</Text>
+          )}
         </View>
       ))}
     </>
@@ -101,7 +107,7 @@ function UserListSearch({users}: {users: TUserInfo[]}) {
 
 export default function Search() {
   const [key, setKey] = useState<string>('');
-  const [searchData, setSearchData] = useState<TUserInfo[]>([]);
+  const [searchData, setSearchData] = useState<TContactList[]>([]);
   const navigation = useNavigation<any>();
   const styles = StyleSheet.create({
     headerHeight: {
@@ -143,7 +149,7 @@ export default function Search() {
               Toast.show({description: '请输入关键词', duration: 1000});
               return;
             }
-            const res = await mutateAsync(key);
+            const res = await mutateAsync({key, from: userInfo.qq});
             setSearchData(res);
             if (res.length === 0) {
               Toast.show({
