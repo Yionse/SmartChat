@@ -21,12 +21,8 @@ export function fetchRequestAddContact() {
 }
 
 export function getVerifyList(target: string) {
-  return useQuery(
-    ['verifyList', target],
-    async () => get<TRequestAddContact[]>('contact/verifyList', {target}),
-    {
-      staleTime: 1000 * 60 * 10, // 缓存数据 10分钟
-    },
+  return useQuery(['verifyList', target], async () =>
+    get<TRequestAddContact[]>('contact/verifyList', {target}),
   );
 }
 

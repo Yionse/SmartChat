@@ -12,7 +12,7 @@ import {
 } from 'native-base';
 import {fetchSearchUser, getRecommendContact} from '@/apis/contact';
 import {UserInfoContext} from '@/Context/UserInfo';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {StyleSheet} from 'react-native';
 import {getRadomColors} from '@/utils/getRadomColors';
@@ -106,6 +106,7 @@ function UserListSearch({users}: {users: TContactList[]}) {
 }
 
 export default function Search() {
+  const isFocused = useIsFocused();
   const [key, setKey] = useState<string>('');
   const [searchData, setSearchData] = useState<TContactList[]>([]);
   const navigation = useNavigation<any>();
@@ -115,8 +116,15 @@ export default function Search() {
     },
   });
   const {userInfo} = useContext(UserInfoContext);
-  const {data: recommendContact} = getRecommendContact({user: userInfo.qq});
+  const {data: recommendContact, refetch} = getRecommendContact({
+    user: userInfo.qq,
+  });
   const {mutateAsync, isLoading} = fetchSearchUser();
+  useEffect(() => {
+    if (isFocused) {
+      refetch();
+    }
+  }, [isFocused]);
   return (
     <ScrollView height={'full'}>
       <View display={'flex'} flexDirection={'row'} p={2} background={'white'}>
