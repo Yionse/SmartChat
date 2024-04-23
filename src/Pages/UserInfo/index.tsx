@@ -15,6 +15,7 @@ import {fetchUpdateUserInfo, getHobbyList, getUserInfo} from '@/apis/login';
 import {useNavigation} from '@react-navigation/native';
 import * as ImagePicker from 'react-native-image-picker';
 import {Pressable} from 'react-native';
+import FlatButton from '@/Components/FlatButton';
 
 export default function UserInfo() {
   const {data: hobbyList} = getHobbyList();
@@ -139,7 +140,6 @@ export default function UserInfo() {
         </View>
         <Button
           my={8}
-          borderRadius={'full'}
           onPress={async () => {
             await mutateAsync({
               userImg: userInfo.userImg,

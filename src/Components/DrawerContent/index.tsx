@@ -99,7 +99,7 @@ export default function DrawerContent() {
         zIndex={2}
         width={'100%'}>
         <View p={2} bg={'white'} borderRadius={'full'}>
-          <Pressable onPress={() => navigation.navigate('UserInfo')}>
+          <Pressable onPress={() => navigation.navigate('Center')}>
             <Image
               source={{uri: userInfo.userImg}}
               width={20}

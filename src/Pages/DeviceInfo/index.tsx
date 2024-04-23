@@ -18,31 +18,39 @@ export default function DeviceInfo() {
     async function init() {
       const location = await getIpLocation();
       setDeviceInfo({
-        baseOs: (await getBaseOs()) || '未知',
-        batteryLevel: (await getBatteryLevel()) * 100 || '未知',
-        brand: getBrand() || '未知',
-        carrier: (await getCarrier()) || '未知',
-        deviceName: (await getDeviceName()) || '未知',
+        baseOs: await getBaseOs(),
+        batteryLevel: (await getBatteryLevel()) * 100,
+        brand: getBrand(),
+        carrier: await getCarrier(),
+        deviceName: await getDeviceName(),
         diskStorage: (await getFreeDiskStorage()) || 0,
         ip: location?.query,
-        position:
-          `${location?.country} ${location?.regionName} ${location.city}` ||
-          '未知',
-        manufacturer: (await getManufacturer()) || '未知',
+        position: `${location?.country} ${location?.regionName} ${location.city}`,
+        manufacturer: await getManufacturer(),
       });
     }
     init();
   }, []);
   return (
     <ScrollView height={'full'} py={4} px={2}>
-      <Text style={styles.menuTitle}>当前系统：{deviceInfo?.baseOs}</Text>
-      <Text style={styles.menuTitle}>当前IP：{deviceInfo?.ip}</Text>
-      <Text style={styles.menuTitle}>当前位置：{deviceInfo?.position}</Text>
-      <Text style={styles.menuTitle}>当前品牌：{deviceInfo?.brand}</Text>
-      <Text style={styles.menuTitle}>当前电量：{deviceInfo?.batteryLevel}</Text>
-      <Text style={styles.menuTitle}>当前运营商：{deviceInfo?.carrier}</Text>
       <Text style={styles.menuTitle}>
-        设备制造商：{deviceInfo?.manufacturer}
+        当前系统：{deviceInfo?.baseOs || '未知'}
+      </Text>
+      <Text style={styles.menuTitle}>当前IP：{deviceInfo?.ip || '未知'}</Text>
+      <Text style={styles.menuTitle}>
+        当前位置：{deviceInfo?.position || '未知'}
+      </Text>
+      <Text style={styles.menuTitle}>
+        当前品牌：{deviceInfo?.brand || '未知'}
+      </Text>
+      <Text style={styles.menuTitle}>
+        当前电量：{deviceInfo?.batteryLevel || '未知'}
+      </Text>
+      <Text style={styles.menuTitle}>
+        当前运营商：{deviceInfo?.carrier || '未知'}
+      </Text>
+      <Text style={styles.menuTitle}>
+        设备制造商：{deviceInfo?.manufacturer || '未知'}
       </Text>
       <ScrollView
         width={'100%'}
@@ -50,7 +58,7 @@ export default function DeviceInfo() {
         showsHorizontalScrollIndicator={false} // 隐藏垂直滚动条
       >
         <Text style={styles.menuTitle}>
-          当前设备名称：{deviceInfo?.deviceName}
+          当前设备名称：{deviceInfo?.deviceName || '未知'}
         </Text>
       </ScrollView>
       <Text style={styles.menuTitle}>

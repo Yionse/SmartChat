@@ -16,7 +16,7 @@ import {useIsFocused, useNavigation} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {StyleSheet} from 'react-native';
 import {getRadomColors} from '@/utils/getRadomColors';
-import {TContactList, TUserInfo} from '@/apis/types';
+import {TContactList} from '@/apis/types';
 import _ from 'lodash';
 
 function UserListSearch({users}: {users: TContactList[]}) {

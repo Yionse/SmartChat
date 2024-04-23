@@ -17,6 +17,7 @@ import Search from '@/Pages/Search';
 import Append from '@/Pages/Append';
 import ContactManagement from '@/Pages/ContactManagement';
 import TabHome from '@/Pages/TabHome';
+import UserCenter from '@/Pages/UserCenter';
 
 const queryClient = new QueryClient();
 const Stack = createNativeStackNavigator();
@@ -102,6 +103,11 @@ function Main() {
       <Stack.Screen
         name="Search"
         component={Search}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Center"
+        component={UserCenter}
         options={{headerShown: false}}
       />
       <Stack.Screen
