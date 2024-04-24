@@ -57,3 +57,10 @@ export type TContactList = TUserInfo & {
     id: number;
   };
 };
+
+export interface TContact {
+  userName: string;
+  qq: string;
+  userImg: string;
+  unRead: number;
+}

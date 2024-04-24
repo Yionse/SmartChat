@@ -1,6 +1,6 @@
 import {useMutation, useQuery} from 'react-query';
 import {get, post} from '.';
-import {TContactList, TRequestAddContact, TUserInfo} from './types';
+import {TContact, TContactList, TRequestAddContact, TUserInfo} from './types';
 
 export function getRecommendContact({user}: {user: string}) {
   return useQuery(['recommend', user], async () =>
@@ -30,5 +30,11 @@ export function fetchUpdateContactStatus() {
   return useMutation(
     async (data: {id: number; status: number; targetRemark?: string}) =>
       post('/contact/verify', data),
+  );
+}
+
+export function fetchContactList(qq: string) {
+  return useQuery(['contactList', qq], async () =>
+    get<TContact[]>('/contact/list'),
   );
 }

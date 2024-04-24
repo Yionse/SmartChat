@@ -7,7 +7,7 @@ import {UserInfoContext} from '@/Context/UserInfo';
 import {TUserInfo} from '@/apis/types';
 
 export default function Append() {
-  const [verifyInfo, setVerifyInfo] = useState<string>();
+  const [verifyInfo, setVerifyInfo] = useState<string>('');
   const [fromRemark, setFromRemark] = useState<string>();
   const {userInfo} = useContext(UserInfoContext);
   const route = useRoute<
@@ -86,11 +86,18 @@ export default function Append() {
           <Button
             className="w-4/5"
             onPress={async () => {
+              if (verifyInfo?.length > 12) {
+                Toast.show({
+                  description: '验证理由不能超过12个字符',
+                  duration: 1000,
+                });
+                return;
+              }
               await addContact({
                 from: userInfo.qq,
                 target: route.params.qq,
                 verifyInfo:
-                  verifyInfo || `${route.params.userName}申请添加你为好友`,
+                  verifyInfo || `${userInfo.userName}申请添加你为好友`,
                 status: 0,
                 fromRemark,
               });

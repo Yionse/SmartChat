@@ -1,11 +1,12 @@
-import React, {useContext, useMemo} from 'react';
+import React, {useContext, useEffect, useMemo} from 'react';
 import {Pressable, ScrollView, Text, View} from 'native-base';
 import {StyleSheet} from 'react-native';
 import {getVerifyList} from '@/apis/contact';
 import {UserInfoContext} from '@/Context/UserInfo';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 export default function Contact() {
+  const isFocused = useIsFocused();
   const navigation = useNavigation<any>();
   const {userInfo} = useContext(UserInfoContext);
   const styles = StyleSheet.create({
@@ -16,7 +17,7 @@ export default function Contact() {
       backgroundColor: '#fff',
     },
   });
-  const {data: verifyList} = getVerifyList(userInfo.qq);
+  const {data: verifyList, refetch} = getVerifyList(userInfo.qq);
   const verifyListLength = useMemo(
     () =>
       verifyList?.filter(
@@ -24,6 +25,11 @@ export default function Contact() {
       ).length || 0,
     [verifyList],
   );
+  useEffect(() => {
+    if (isFocused) {
+      refetch();
+    }
+  }, [isFocused]);
   return (
     <ScrollView height={'full'}>
       <Pressable onPress={() => navigation.navigate('ContactManagement')}>

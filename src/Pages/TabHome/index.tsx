@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useRef} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {Image, Pressable, Text, View, useTheme} from 'native-base';
+import {Image, Pressable, View, useTheme} from 'native-base';
 import TabHeader from '../../Components/TabHeader';
 import Contact from '../Contact';
 import Square from '../Square';
@@ -12,6 +12,7 @@ import {UserInfoContext} from '@/Context/UserInfo';
 import {fetchUpdateUserInfo, getIpLocation} from '@/apis/login';
 import {getChineseRegionName} from '@/utils/getChineseRegionName';
 import DrawerContent from '@/Components/DrawerContent';
+import {fetchContactList} from '@/apis/contact';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,6 +23,7 @@ export default function TabHome() {
   const {userInfo, setUserInfo} = useContext(UserInfoContext);
 
   const {mutateAsync} = fetchUpdateUserInfo();
+  const {data} = fetchContactList(userInfo.qq);
   useEffect(() => {
     async function initLocation() {
       const location = await getIpLocation();
@@ -33,7 +35,7 @@ export default function TabHome() {
       setUserInfo(params);
     }
     initLocation();
-  }, []);
+  }, [data]);
   return (
     <>
       <DrawerLayoutAndroid

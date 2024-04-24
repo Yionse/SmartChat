@@ -141,6 +141,10 @@ export default function UserInfo() {
         <Button
           my={8}
           onPress={async () => {
+            if (nickname.length > 6) {
+              Toast.show({description: '昵称不能超过6个字符', duration: 1000});
+              return;
+            }
             await mutateAsync({
               userImg: userInfo.userImg,
               userName: nickname,

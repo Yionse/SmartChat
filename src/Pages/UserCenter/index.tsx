@@ -2,13 +2,21 @@ import React, {useContext, useEffect} from 'react';
 import {Button, Image, Pressable, ScrollView, Text, View} from 'native-base';
 import {UserInfoContext} from '@/Context/UserInfo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {useNavigation} from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {getRadomColors} from '@/utils/getRadomColors';
 import {getFetchPersonalForum} from '@/apis/forum';
 import FlatButton from '@/Components/FlatButton';
 
 export default function UserCenter() {
   const navigation = useNavigation<any>();
+  const route = useRoute<
+    RouteProp<
+      {
+        user: {user?: string};
+      },
+      'user'
+    >
+  >();
   let {userInfo} = useContext(UserInfoContext);
   const {data} = getFetchPersonalForum(userInfo.qq);
   return (
@@ -86,11 +94,15 @@ export default function UserCenter() {
         <Text fontSize={'xs'}>IP:{userInfo.location}</Text>
       </View>
       <FlatButton>
-        <Button
-          className="w-4/5"
-          onPress={() => navigation.navigate('UserInfo')}>
-          修改资料
-        </Button>
+        {/* 不传用户名，说明是自己看自己主页，显示修改资料按钮 */}
+        {!route.params?.user && (
+          <Button
+            className="w-4/5"
+            onPress={() => navigation.navigate('UserInfo')}>
+            修改资料
+          </Button>
+        )}
+        {/* 可能还会有 加为好友 - 发送消息 俩按钮 */}
       </FlatButton>
     </View>
   );

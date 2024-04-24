@@ -62,6 +62,10 @@ export default function SetUserInfo() {
   }, []);
   const handleSubmit = async () => {
     if (nickname && gender && hobbies.length !== 0) {
+      if (nickname.length > 6) {
+        Toast.show({description: '昵称不能超过6个字符', duration: 1000});
+        return;
+      }
       const locationInfo = await getIpLocation();
       const params: TUserInfo = {
         qq: route.params?.qq,
