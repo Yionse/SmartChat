@@ -15,6 +15,7 @@ import {fetchCommentForum, getFetchPersonalForum} from '@/apis/forum';
 import {UserInfoContext} from '@/Context/UserInfo';
 import moment from 'moment';
 import {FlatList} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 /**
  * 待优化：
@@ -24,6 +25,7 @@ import {FlatList} from 'react-native';
  */
 
 export default function Square() {
+  const navigation = useNavigation<any>();
   const {userInfo} = useContext(UserInfoContext);
   const {
     data,
@@ -58,13 +60,18 @@ export default function Square() {
                 setIsOpen(true);
               }}>
               <View className=" flex flex-row">
-                <Image
-                  source={{uri: item?.userImg}}
-                  width={10}
-                  height={10}
-                  borderRadius={'full'}
-                  alt={item.user}
-                />
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate('Center', {user: item.userId})
+                  }>
+                  <Image
+                    source={{uri: item?.userImg}}
+                    width={10}
+                    height={10}
+                    borderRadius={'full'}
+                    alt={item.user}
+                  />
+                </Pressable>
                 <Box mx={2} />
                 <Text fontSize={'xl'}>{item?.userName}</Text>
               </View>

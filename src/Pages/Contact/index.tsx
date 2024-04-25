@@ -1,9 +1,12 @@
 import React, {useContext, useEffect, useMemo} from 'react';
 import {Pressable, ScrollView, Text, View} from 'native-base';
-import {StyleSheet} from 'react-native';
-import {getVerifyList} from '@/apis/contact';
+import {RefreshControl, StyleSheet} from 'react-native';
+import {getContactList, getVerifyList} from '@/apis/contact';
 import {UserInfoContext} from '@/Context/UserInfo';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {TContact} from '@/apis/types';
+
+function User({item}: {item: TContact}) {}
 
 export default function Contact() {
   const isFocused = useIsFocused();
@@ -18,6 +21,11 @@ export default function Contact() {
     },
   });
   const {data: verifyList, refetch} = getVerifyList(userInfo.qq);
+  const {
+    data: contactList,
+    refetch: refetchContact,
+    isLoading,
+  } = getContactList(userInfo.qq);
   const verifyListLength = useMemo(
     () =>
       verifyList?.filter(
@@ -28,10 +36,15 @@ export default function Contact() {
   useEffect(() => {
     if (isFocused) {
       refetch();
+      refetchContact();
     }
   }, [isFocused]);
+
+  const refreshControl = (
+    <RefreshControl refreshing={isLoading} onRefresh={refetchContact} />
+  );
   return (
-    <ScrollView height={'full'}>
+    <ScrollView height={'full'} refreshControl={refreshControl}>
       <Pressable onPress={() => navigation.navigate('ContactManagement')}>
         <View position={'relative'} mt={2}>
           <Text style={styles.contact} pl={4}>

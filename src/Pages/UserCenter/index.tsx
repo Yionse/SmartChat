@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useCallback, useContext, useEffect} from 'react';
 import {Button, Image, Pressable, ScrollView, Text, View} from 'native-base';
 import {UserInfoContext} from '@/Context/UserInfo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -6,6 +6,7 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {getRadomColors} from '@/utils/getRadomColors';
 import {getFetchPersonalForum} from '@/apis/forum';
 import FlatButton from '@/Components/FlatButton';
+import {getUserInfo} from '@/apis/contact';
 
 export default function UserCenter() {
   const navigation = useNavigation<any>();
@@ -17,8 +18,14 @@ export default function UserCenter() {
       'user'
     >
   >();
-  let {userInfo} = useContext(UserInfoContext);
-  const {data} = getFetchPersonalForum(userInfo.qq);
+  const {userInfo: me} = useContext(UserInfoContext);
+  const {data: userInfo} = getUserInfo(route.params?.user || me.qq);
+  const {data: forumData, refetch} = getFetchPersonalForum(
+    route.params?.user || me.qq,
+  );
+  useEffect(() => {
+    refetch();
+  }, [route.params?.user]);
   return (
     <View flex={1} className=" bg-white pt-16 relative ">
       <ScrollView
@@ -30,14 +37,14 @@ export default function UserCenter() {
         }}>
         <Text fontSize={'2xl'} textAlign={'center'}>
           <AntDesign
-            name={userInfo.sex === '男' ? 'man' : 'woman'}
-            color={userInfo.sex === '男' ? 'blue' : 'pink'}
+            name={userInfo?.sex === '男' ? 'man' : 'woman'}
+            color={userInfo?.sex === '男' ? 'blue' : 'pink'}
             size={22}
           />
-          {userInfo.userName}
+          {userInfo?.userName}
         </Text>
         <Text fontSize={'xl'} px={4}>
-          {userInfo.signature}
+          {userInfo?.signature}
         </Text>
         <View px={4} mb={2}>
           <View display={'flex'} flexDirection={'row'} flexWrap={'wrap'}>
@@ -57,7 +64,7 @@ export default function UserCenter() {
         </View>
         <View>
           <Text>发布的论坛：</Text>
-          {data?.slice(0, 5)?.map(item => (
+          {forumData?.slice(0, 5)?.map(item => (
             <Text
               pl={4}
               key={item.id}
@@ -67,6 +74,7 @@ export default function UserCenter() {
               {item.content}
             </Text>
           ))}
+          {forumData?.length === 0 && <Text>暂无</Text>}
         </View>
       </ScrollView>
       <View
@@ -84,14 +92,14 @@ export default function UserCenter() {
         </Pressable>
         <View p={2} bg={'white'} borderRadius={'full'}>
           <Image
-            source={{uri: userInfo.userImg}}
+            source={{uri: userInfo?.userImg}}
             width={20}
             height={20}
             borderRadius={'full'}
             alt="头像"
           />
         </View>
-        <Text fontSize={'xs'}>IP:{userInfo.location}</Text>
+        <Text fontSize={'xs'}>IP:{userInfo?.location}</Text>
       </View>
       <FlatButton>
         {/* 不传用户名，说明是自己看自己主页，显示修改资料按钮 */}

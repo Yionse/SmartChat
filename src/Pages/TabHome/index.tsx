@@ -12,7 +12,7 @@ import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {UserInfoContext} from '@/Context/UserInfo';
 import {fetchUpdateUserInfo, getIpLocation} from '@/apis/login';
 import {getChineseRegionName} from '@/utils/getChineseRegionName';
-import {fetchContactList} from '@/apis/contact';
+import {getContactList} from '@/apis/contact';
 import DrawerContent from '@/Components/DrawerContent';
 
 const Tab = createBottomTabNavigator();
@@ -24,7 +24,7 @@ function TabHome() {
   const {userInfo, setUserInfo} = useContext(UserInfoContext);
 
   const {mutateAsync} = fetchUpdateUserInfo();
-  const {data} = fetchContactList(userInfo.qq);
+  const {data} = getContactList(userInfo.qq);
   useEffect(() => {
     async function initLocation() {
       const location = await getIpLocation();

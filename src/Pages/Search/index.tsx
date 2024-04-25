@@ -40,66 +40,71 @@ function UserListSearch({users}: {users: TContactList[]}) {
   return (
     <>
       {users?.map((user, index) => (
-        <View
-          my={1}
-          display={'flex'}
-          flexDirection={'row'}
-          alignItems={'center'}
-          p={1}
-          key={user.qq}
-          style={{
-            borderBottomWidth: 1,
-            borderStyle: 'solid',
-          }}>
-          <Image
-            source={{uri: user.userImg}}
-            width={12}
-            height={12}
-            borderRadius={'full'}
-            alt="用户头像"
-          />
-          <View mx={1}>
-            <Text>
-              {user?.userName} &nbsp;&nbsp;&nbsp;ip:{user.location}
-            </Text>
-            <View display={'flex'} flexDirection={'row'}>
-              {user?.hobbyList
-                ?.split('-')
-                .slice(0, 3)
-                ?.map((hobby: string, twoIndex: number) => (
-                  <Text
-                    key={hobby}
-                    bg={colorsRef?.[index]?.[twoIndex]}
-                    mx={1}
-                    p={1}
-                    borderRadius={'xl'}
-                    color="black">
-                    {hobby}
-                  </Text>
-                ))}
-              {user?.hobbyList?.split('-').length > 3 && <Text>...</Text>}
+        <Pressable
+          onPress={() => navigation.navigate('Center', {user: user.qq})}>
+          <View
+            my={1}
+            display={'flex'}
+            flexDirection={'row'}
+            alignItems={'center'}
+            p={1}
+            key={user.qq}
+            style={{
+              borderBottomWidth: 1,
+              borderStyle: 'solid',
+            }}>
+            <Image
+              source={{uri: user.userImg}}
+              width={12}
+              height={12}
+              borderRadius={'full'}
+              alt="用户头像"
+            />
+            <View mx={1}>
+              <Text>
+                {user?.userName} &nbsp;&nbsp;&nbsp;ip:{user.location}
+              </Text>
+              <View display={'flex'} flexDirection={'row'}>
+                {user?.hobbyList
+                  ?.split('-')
+                  .slice(0, 3)
+                  ?.map((hobby: string, twoIndex: number) => (
+                    <Text
+                      key={hobby}
+                      bg={colorsRef?.[index]?.[twoIndex]}
+                      mx={1}
+                      p={1}
+                      borderRadius={'xl'}
+                      color="black">
+                      {hobby}
+                    </Text>
+                  ))}
+                {user?.hobbyList?.split('-').length > 3 && <Text>...</Text>}
+              </View>
             </View>
+            {user?.isAdd.text === '去验证' || user?.isAdd.isAdd ? (
+              <Button
+                style={{height: 36, marginLeft: 'auto'}}
+                onPress={() => {
+                  navigation.navigate('Append', {
+                    userName: user.userName,
+                    userImg: user.userImg,
+                    qq: user.qq,
+                    sex: user.sex,
+                    signature: user.signature,
+                    isVerify: user.isAdd.text === '去验证' ? true : false,
+                    id: user?.isAdd?.id,
+                  });
+                }}>
+                {user.isAdd.text === '去验证' ? '去验证' : '添加'}
+              </Button>
+            ) : (
+              <Text style={{marginLeft: 'auto'}}>
+                {user?.isAdd?.text || ''}
+              </Text>
+            )}
           </View>
-          {user?.isAdd.text === '去验证' || user?.isAdd.isAdd ? (
-            <Button
-              style={{height: 36, marginLeft: 'auto'}}
-              onPress={() => {
-                navigation.navigate('Append', {
-                  userName: user.userName,
-                  userImg: user.userImg,
-                  qq: user.qq,
-                  sex: user.sex,
-                  signature: user.signature,
-                  isVerify: user.isAdd.text === '去验证' ? true : false,
-                  id: user?.isAdd?.id,
-                });
-              }}>
-              {user.isAdd.text === '去验证' ? '去验证' : '添加'}
-            </Button>
-          ) : (
-            <Text style={{marginLeft: 'auto'}}>{user?.isAdd?.text || ''}</Text>
-          )}
-        </View>
+        </Pressable>
       ))}
     </>
   );

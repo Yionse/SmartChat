@@ -33,8 +33,14 @@ export function fetchUpdateContactStatus() {
   );
 }
 
-export function fetchContactList(qq: string) {
+export function getContactList(qq: string) {
   return useQuery(['contactList', qq], async () =>
     get<TContact[]>('/contact/list', {qq}),
+  );
+}
+
+export function getUserInfo(qq: string) {
+  return useQuery(['userInfo', qq], async () =>
+    get<TUserInfo>('/contact/detail', {qq}),
   );
 }

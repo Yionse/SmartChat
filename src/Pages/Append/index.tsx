@@ -1,5 +1,14 @@
 import React, {useContext, useState} from 'react';
-import {Box, Button, Image, Input, Text, Toast, View} from 'native-base';
+import {
+  Box,
+  Button,
+  Image,
+  Input,
+  Pressable,
+  Text,
+  Toast,
+  View,
+} from 'native-base';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {fetchRequestAddContact, fetchUpdateContactStatus} from '@/apis/contact';
@@ -119,30 +128,33 @@ export function UserList({
   info: TUserInfo;
   rightElement?: React.ReactElement;
 }) {
+  const navigation = useNavigation<any>();
   const {userName, userImg, sex, qq, signature} = info;
   return (
-    <Box className="flex flex-row items-center bg-white" mt={2} p={2}>
-      <Image
-        source={{uri: userImg}}
-        width={16}
-        height={16}
-        borderRadius={'full'}
-        alt="头像"
-      />
-      <Box ml={4}>
-        <Box className="flex flex-row">
-          <AntDesign
-            name={sex === '男' ? 'man' : 'woman'}
-            color={sex === '男' ? 'blue' : 'pink'}
-            size={16}
-          />
-          <Text ml={2}>
-            {qq}({userName})
-          </Text>
+    <Pressable onPress={() => navigation.navigate('Center', {user: qq})}>
+      <Box className="flex flex-row items-center bg-white" mt={2} p={2}>
+        <Image
+          source={{uri: userImg}}
+          width={16}
+          height={16}
+          borderRadius={'full'}
+          alt="头像"
+        />
+        <Box ml={4}>
+          <Box className="flex flex-row">
+            <AntDesign
+              name={sex === '男' ? 'man' : 'woman'}
+              color={sex === '男' ? 'blue' : 'pink'}
+              size={16}
+            />
+            <Text ml={2}>
+              {qq}({userName})
+            </Text>
+          </Box>
+          <Text>{signature}</Text>
         </Box>
-        <Text>{signature}</Text>
+        <View style={{marginLeft: 'auto'}}>{rightElement}</View>
       </Box>
-      <View style={{marginLeft: 'auto'}}>{rightElement}</View>
-    </Box>
+    </Pressable>
   );
 }
