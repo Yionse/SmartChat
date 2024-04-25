@@ -35,6 +35,6 @@ export function fetchUpdateContactStatus() {
 
 export function fetchContactList(qq: string) {
   return useQuery(['contactList', qq], async () =>
-    get<TContact[]>('/contact/list'),
+    get<TContact[]>('/contact/list', {qq}),
   );
 }

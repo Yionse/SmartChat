@@ -15,6 +15,7 @@ module.exports = {
     }),
   },
   resolver: {
+    sourceExts: ['js', 'jsx', 'ts', 'tsx', 'cjs'], // 增加支持的文件类型
     assetExts: ['png', 'jpg', 'jpeg', 'gif', 'svg'], // 添加图片后缀类型
   },
 };

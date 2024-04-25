@@ -1,13 +1,15 @@
-import React, {useRef} from 'react';
-import {Button, Pressable, Text} from 'native-base';
+import React, {useRef, useState} from 'react';
+import {Button, Drawer, Pressable, Text} from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
+import DrawerContent from '@/Components/DrawerContent';
 
-export default function Message({drawerRef}: {drawerRef: any}) {
+export default function Message() {
   const navigation = useNavigation<any>();
+  const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   return (
     <>
-      <Pressable onPress={() => drawerRef?.current.openDrawer()}>
+      <Pressable onPress={() => setIsOpenDrawer(true)}>
         <Text>信息</Text>
       </Pressable>
       <Button
