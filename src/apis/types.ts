@@ -58,7 +58,7 @@ export type TContactList = TUserInfo & {
   };
 };
 
-export type TContact = TRequestAddContact & {
+export type TContact = {
   userInfo?: TUserInfo;
   remark?: string;
 };

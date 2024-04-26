@@ -33,7 +33,7 @@ export function fetchUpdateContactStatus() {
   );
 }
 
-export function getContactList(qq: string) {
+export function useGetContactList(qq: string) {
   return useQuery(['contactList', qq], async () =>
     get<TContact[]>('/contact/list', {qq}),
   );

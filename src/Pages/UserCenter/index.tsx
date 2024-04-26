@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useEffect} from 'react';
+import React, {useCallback, useContext, useEffect, useMemo} from 'react';
 import {Button, Image, Pressable, ScrollView, Text, View} from 'native-base';
 import {UserInfoContext} from '@/Context/UserInfo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -6,7 +6,7 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {getRadomColors} from '@/utils/getRadomColors';
 import {getFetchPersonalForum} from '@/apis/forum';
 import FlatButton from '@/Components/FlatButton';
-import {getUserInfo} from '@/apis/contact';
+import {getUserInfo, useGetContactList} from '@/apis/contact';
 
 export default function UserCenter() {
   const navigation = useNavigation<any>();
@@ -23,6 +23,10 @@ export default function UserCenter() {
   const {data: forumData, refetch} = getFetchPersonalForum(
     route.params?.user || me.qq,
   );
+  const {data: personalList} = useGetContactList(me.qq);
+  const isContact = useMemo(() => {
+    return personalList?.some(item => item.userInfo?.qq === userInfo?.qq);
+  }, [personalList]);
   useEffect(() => {
     refetch();
   }, [route.params?.user]);
@@ -43,8 +47,11 @@ export default function UserCenter() {
           />
           {userInfo?.userName}
         </Text>
-        <Text fontSize={'xl'} px={4}>
-          {userInfo?.signature}
+        <Text fontSize={'lg'} px={4}>
+          QQ：{userInfo?.qq}
+        </Text>
+        <Text fontSize={'lg'} px={4}>
+          个性签名：{userInfo?.signature}
         </Text>
         <View px={4} mb={2}>
           <View display={'flex'} flexDirection={'row'} flexWrap={'wrap'}>
@@ -102,15 +109,26 @@ export default function UserCenter() {
         <Text fontSize={'xs'}>IP:{userInfo?.location}</Text>
       </View>
       <FlatButton>
-        {/* 不传用户名，说明是自己看自己主页，显示修改资料按钮 */}
-        {!route.params?.user && (
-          <Button
-            className="w-4/5"
-            onPress={() => navigation.navigate('UserInfo')}>
-            修改资料
-          </Button>
-        )}
-        {/* 可能还会有 加为好友 - 发送消息 俩按钮 */}
+        <Button
+          className="w-4/5"
+          onPress={() => {
+            if (!route?.params?.user) {
+              navigation.navigate('UserInfo');
+            } else if (isContact) {
+              console.log('去消息页面');
+            } else {
+              navigation.navigate('Append', {
+                ...userInfo,
+              });
+            }
+          }}>
+          {/* 还有去验证的情况 */}
+          {!route?.params?.user
+            ? '编辑信息'
+            : isContact
+            ? '发送消息'
+            : '加为好友'}
+        </Button>
       </FlatButton>
     </View>
   );

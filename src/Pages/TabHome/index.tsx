@@ -8,11 +8,10 @@ import Contact from '../Contact';
 import Square from '../Square';
 import Message from '../Message';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {UserInfoContext} from '@/Context/UserInfo';
 import {fetchUpdateUserInfo, getIpLocation} from '@/apis/login';
 import {getChineseRegionName} from '@/utils/getChineseRegionName';
-import {getContactList} from '@/apis/contact';
 import DrawerContent from '@/Components/DrawerContent';
 
 const Tab = createBottomTabNavigator();
@@ -24,7 +23,6 @@ function TabHome() {
   const {userInfo, setUserInfo} = useContext(UserInfoContext);
 
   const {mutateAsync} = fetchUpdateUserInfo();
-  const {data} = getContactList(userInfo.qq);
   useEffect(() => {
     async function initLocation() {
       const location = await getIpLocation();
@@ -36,7 +34,7 @@ function TabHome() {
       setUserInfo(params);
     }
     initLocation();
-  }, [data]);
+  }, []);
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -113,6 +111,20 @@ function TabHome() {
             return (
               <TabHeader
                 title="联系人"
+                leftElement={
+                  <Pressable onPress={() => navigation.openDrawer()}>
+                    <Image
+                      source={{
+                        uri: `https://q1.qlogo.cn/g?b=qq&nk=${2458015575}&s=5`,
+                      }}
+                      borderRadius={'full'}
+                      alt="头像"
+                      width={'40px'}
+                      height={'40px'}
+                      marginTop={'5px'}
+                    />
+                  </Pressable>
+                }
                 rightElement={
                   <View
                     flex={1}
