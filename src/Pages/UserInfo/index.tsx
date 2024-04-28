@@ -13,9 +13,6 @@ import {UserInfoContext} from '@/Context/UserInfo';
 import {styles} from '../SetUserInfo';
 import {fetchUpdateUserInfo, getHobbyList, getUserInfo} from '@/apis/login';
 import {useNavigation} from '@react-navigation/native';
-import * as ImagePicker from 'react-native-image-picker';
-import {Pressable} from 'react-native';
-import FlatButton from '@/Components/FlatButton';
 
 export default function UserInfo() {
   const {data: hobbyList} = getHobbyList();

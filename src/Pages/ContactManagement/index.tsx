@@ -72,6 +72,9 @@ export default function ContactManagement() {
       refreshControl={
         <RefreshControl refreshing={isLoading} onRefresh={refetch} />
       }>
+      {verifyList?.length === 0 && (
+        <Text className="m-4 text-center">暂无数据</Text>
+      )}
       {requestList?.length > 0 && <Text className="m-1">我发出的</Text>}
       {requestList?.map(verify => {
         return (

@@ -62,3 +62,7 @@ export type TContact = {
   userInfo?: TUserInfo;
   remark?: string;
 };
+
+export interface TContactStatus {
+  status: 'info' | 'message' | 'wait' | 'check' | 'add';
+}

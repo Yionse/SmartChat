@@ -111,7 +111,7 @@ export default function Append() {
                 fromRemark,
               });
               Toast.show({description: '发起好友申请成功', duration: 1000});
-              navigation.navigate('Search');
+              navigation.navigate('ContactManagement');
             }}>
             提交
           </Button>

@@ -1,6 +1,12 @@
 import {useMutation, useQuery} from 'react-query';
 import {get, post} from '.';
-import {TContact, TContactList, TRequestAddContact, TUserInfo} from './types';
+import {
+  TContact,
+  TContactList,
+  TContactStatus,
+  TRequestAddContact,
+  TUserInfo,
+} from './types';
 
 export function getRecommendContact({user}: {user: string}) {
   return useQuery(['recommend', user], async () =>
@@ -42,5 +48,14 @@ export function useGetContactList(qq: string) {
 export function getUserInfo(qq: string) {
   return useQuery(['userInfo', qq], async () =>
     get<TUserInfo>('/contact/detail', {qq}),
+  );
+}
+
+export function fetchQueryContactStatus(from: string, target?: string) {
+  if (!target) {
+    return {data: {status: 'info'}}; // 如果 target 为空，则直接返回空的 data 对象
+  }
+  return useQuery(['status', from, target], async () =>
+    post<TContactStatus>('/contact/status', {from, target}),
   );
 }

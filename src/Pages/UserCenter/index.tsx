@@ -1,12 +1,20 @@
-import React, {useCallback, useContext, useEffect, useMemo} from 'react';
-import {Button, Image, Pressable, ScrollView, Text, View} from 'native-base';
+import React, {useContext, useEffect, useMemo} from 'react';
+import {
+  Button,
+  Image,
+  Pressable,
+  ScrollView,
+  Text,
+  Toast,
+  View,
+} from 'native-base';
 import {UserInfoContext} from '@/Context/UserInfo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {getRadomColors} from '@/utils/getRadomColors';
 import {getFetchPersonalForum} from '@/apis/forum';
 import FlatButton from '@/Components/FlatButton';
-import {getUserInfo, useGetContactList} from '@/apis/contact';
+import {fetchQueryContactStatus, getUserInfo} from '@/apis/contact';
 
 export default function UserCenter() {
   const navigation = useNavigation<any>();
@@ -23,13 +31,58 @@ export default function UserCenter() {
   const {data: forumData, refetch} = getFetchPersonalForum(
     route.params?.user || me.qq,
   );
-  const {data: personalList} = useGetContactList(me.qq);
-  const isContact = useMemo(() => {
-    return personalList?.some(item => item.userInfo?.qq === userInfo?.qq);
-  }, [personalList]);
+  // @ts-nocheck
+  const {data} = fetchQueryContactStatus(me.qq, route?.params?.user);
   useEffect(() => {
     refetch();
   }, [route.params?.user]);
+  const statusMapHandle: {} = {
+    add: {
+      text: '添加好友',
+      handle: () => {
+        navigation.navigate('Append', {
+          ...userInfo,
+        });
+      },
+    },
+    check: {
+      text: '去验证',
+      handle() {
+        // 去验证
+        navigation.navigate('Append', {
+          ...userInfo,
+          isVerify: true,
+        });
+      },
+    },
+    info: {
+      text: '修改信息',
+      handle() {
+        // 修改个人信息
+        navigation.navigate('UserInfo');
+      },
+    },
+    wait: {
+      text: '等待验证',
+      handle() {
+        // 等待同意
+        Toast.show({description: '等待对方同意', duration: 1000});
+      },
+    },
+    message: {
+      text: '发送消息',
+      handle() {
+        // 发送消息
+        Toast.show({description: '发送消息', duration: 1000});
+      },
+    },
+    error: {
+      text: '错误',
+      handle() {
+        Toast.show({description: '发生错误，请提issue', duration: 1000});
+      },
+    },
+  };
   return (
     <View flex={1} className=" bg-white pt-16 relative ">
       <ScrollView
@@ -111,23 +164,12 @@ export default function UserCenter() {
       <FlatButton>
         <Button
           className="w-4/5"
-          onPress={() => {
-            if (!route?.params?.user) {
-              navigation.navigate('UserInfo');
-            } else if (isContact) {
-              console.log('去消息页面');
-            } else {
-              navigation.navigate('Append', {
-                ...userInfo,
-              });
-            }
-          }}>
-          {/* 还有去验证的情况 */}
-          {!route?.params?.user
-            ? '编辑信息'
-            : isContact
-            ? '发送消息'
-            : '加为好友'}
+          // @ts-ignore
+          onPress={() => statusMapHandle[data?.status || 'error']?.handle()}>
+          {
+            // @ts-ignore
+            statusMapHandle[data?.status || 'error']?.text
+          }
         </Button>
       </FlatButton>
     </View>
