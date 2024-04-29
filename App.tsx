@@ -18,6 +18,7 @@ import Append from '@/Pages/Append';
 import ContactManagement from '@/Pages/ContactManagement';
 import TabHome from '@/Pages/TabHome';
 import UserCenter from '@/Pages/UserCenter';
+import DialogMessage from '@/Pages/DIalogMessage';
 
 const queryClient = new QueryClient();
 const Stack = createNativeStackNavigator();
@@ -152,6 +153,11 @@ function Main() {
             );
           },
         }}
+      />
+      <Stack.Screen
+        name="DialogMessage"
+        component={DialogMessage}
+        options={{headerShown: false}}
       />
     </Stack.Navigator>
   );

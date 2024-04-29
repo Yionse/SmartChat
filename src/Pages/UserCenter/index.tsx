@@ -73,7 +73,11 @@ export default function UserCenter() {
       text: '发送消息',
       handle() {
         // 发送消息
-        Toast.show({description: '发送消息', duration: 1000});
+        navigation.navigate('DialogMessage', {
+          user: userInfo?.qq,
+          userName: userInfo?.userName,
+          userImg: userInfo?.userImg,
+        });
       },
     },
     error: {

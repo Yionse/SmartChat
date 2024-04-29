@@ -1,6 +1,5 @@
 import React from 'react';
 import {Pressable, Text, View} from 'native-base';
-import {TouchableOpacity} from 'react-native';
 
 export default function TabHeader({
   title,

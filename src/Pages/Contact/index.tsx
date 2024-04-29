@@ -12,7 +12,10 @@ function User({item}: {item: TContact}) {
   const {userInfo} = item;
   const {qq, userName, signature, sex, userImg} = userInfo || {};
   return (
-    <Pressable>
+    <Pressable
+      onPress={() =>
+        navigation.navigate('DialogMessage', {userName, userImg, user: qq})
+      }>
       <Box className="flex flex-row items-center bg-white" mt={2} p={2}>
         <Image
           source={{uri: userImg}}
